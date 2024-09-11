@@ -1,0 +1,5 @@
+tapi: # Enable or disable the plugin
+  enable: true
+
+server: # The port where the API endpoints will be accessible
+  port: 1850

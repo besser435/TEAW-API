@@ -1,8 +1,0 @@
-name: TEAW-API
-version: '0.1'
-main: me.besser.TAPI
-api-version: '1.20'
-prefix: LEP
-authors: [ brandonusa, hexdepixel ]
-description: Leauge of Nations Economy Plugin
-website: https://github.com/besser435
