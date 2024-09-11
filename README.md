@@ -27,4 +27,8 @@ the server lives. The default is `1850`.
     }
     ```
   
-## And that's it! It's a pretty simple plugin. Theenor please add it, Italy and I need it for our respective websites.
+## Building
+The plugin is built with Maven, and is edited in IntelliJ IDEA. It is free for students.
+[This video](https://www.youtube.com/watch?v=s1xg9eJeP3E) is helpful for getting started.
+
+And that's it! It's a pretty simple plugin. Theenor please add it, Italy and I need it for our respective websites.
