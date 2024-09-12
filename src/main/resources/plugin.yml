@@ -3,7 +3,8 @@ version: ${project.version}
 main: me.besser.TAPI
 api-version: '1.20'
 prefix: TAPI
-authors: [ brandonusa ]
+authors: [brandonusa]
+contributors: [MlgEpicCar]
 description: A super simple API for fetching player info on TEAW.
-website: https://github.com/besser435
+website: https://github.com/besser435/TEAW-API
 depend: [Towny]
