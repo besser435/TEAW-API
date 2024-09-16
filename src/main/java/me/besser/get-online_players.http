@@ -1,0 +1,2 @@
+// @no-log
+GET http://localhost:1850/api/online_players

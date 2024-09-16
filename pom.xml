@@ -6,7 +6,7 @@
 
     <groupId>me.besser</groupId>
     <artifactId>TAPI</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
 
     <name>TAPI</name>
@@ -63,7 +63,14 @@
             <id>glaremasters repo</id>
             <url>https://repo.glaremasters.me/repository/towny/</url>
         </repository>
+        <repository>
+            <id>vault-repo</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
+
+    <!-- Ensure building the depends don't conflict with what is already on the server. -->
+    <!-- Should not be an issue due to the provided scope, but test anyway -->
 
     <dependencies>
         <dependency>
@@ -90,6 +97,12 @@
             <groupId>com.sparkjava</groupId>
             <artifactId>spark-core</artifactId>
             <version>2.9.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.7</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

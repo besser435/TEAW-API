@@ -7,4 +7,4 @@ authors: [brandonusa]
 contributors: [MlgEpicCar]
 description: A super simple API for fetching player info on TEAW.
 website: https://github.com/besser435/TEAW-API
-depend: [Towny]
+depend: [Towny, Vault]

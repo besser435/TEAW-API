@@ -12,6 +12,10 @@ import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 
+import net.milkbowl.vault.economy.Economy;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -43,15 +47,26 @@ public class PlayerTracker implements Listener {
         return (System.currentTimeMillis() - lastMove) > AFK_THRESHOLD;
     }
 
+    /*
+    TODO: some things should be seperated into different APIs.
+    this should be just a general player API, with a bool for if the player is online or not
+    */
     public Map<UUID, Map<String, Object>> getOnlinePlayersInfo() {
         // Should maybe change to a better format, like "uuid":UUID, rather than just UUID
         Map<UUID, Map<String, Object>> playerInfoMap = new HashMap<>();
+        Economy economy = TAPI.getEconomy();
+
         for (Player player : org.bukkit.Bukkit.getOnlinePlayers()) {
             boolean isAFK = isPlayerAFK(player);
 
             Map<String, Object> playerData = new HashMap<>();
             playerData.put("name", player.getName());
             playerData.put("afk", isAFK);
+
+
+            double balance = economy.getBalance(player);
+            BigDecimal bd = new BigDecimal(balance).setScale(2, RoundingMode.HALF_UP);  // unserious programming language
+            playerData.put("balance", bd.doubleValue());
 
             addTownyData(player, playerData);
 

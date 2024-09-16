@@ -36,11 +36,13 @@ public class PlayerDataServer {
         get("/api/online_players", (req, res) -> {
             res.type("application/json");
 
+            // TODO: add catch any errors, return 500 if they occur
             return gson.toJson(playerTracker.getOnlinePlayersInfo());
         });
 
 // Not enabled yet, may be added in a future update
-//        get("/api/player_stats/:username", (req, res) -> {  // Should be a UUID
+// requires the player to be online to get all stats that aren't in the general category
+//        get("/api/full_player_stats/:username", (req, res) -> {  // Should be a UUID
 //            String username = req.params("username");
 //            res.type("application/json");
 //
