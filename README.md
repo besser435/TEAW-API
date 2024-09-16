@@ -6,6 +6,9 @@ Using the Towny API, we also get the name of the nation/town the players are in.
 
 The Towny and Bukkit APIs are very simple, so this could easily be expanded in the future if Theeno allows for it.
 
+## Programmer Notes
+Spark is deprecated, transition to something else.
+
 ## Configuration
 TAPI implements a nano sized HTTP server for replying to requests. The only config option is the port at which
 the server lives. The default is `1850`.

@@ -15,8 +15,9 @@ public class PlayerDataServer {
     private final JavaPlugin plugin;
     private final PlayerTracker playerTracker;
     //private final PlayerStatTracker playerStatTracker = new PlayerStatTracker();
-
     private final Gson gson = new Gson();
+
+    // TODO: Spark is deprecated. Transition to Javalin
 
     public PlayerDataServer(JavaPlugin plugin, PlayerTracker playerTracker) {
         this.plugin = plugin;
@@ -33,8 +34,8 @@ public class PlayerDataServer {
 
         port(serverPort);
 
-        get("/api/online_players", (req, res) -> {
-            res.type("application/json");
+        get("/api/online_players", (request, response) -> {
+            response.type("application/json");
 
             // TODO: add catch any errors, return 500 if they occur
             return gson.toJson(playerTracker.getOnlinePlayersInfo());
