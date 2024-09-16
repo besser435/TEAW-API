@@ -4,7 +4,7 @@
   <groupId>me.besser</groupId>
   <artifactId>TAPI</artifactId>
   <name>TAPI</name>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
   <build>
     <defaultGoal>clean package</defaultGoal>
     <resources>
@@ -49,6 +49,10 @@
       <id>glaremasters repo</id>
       <url>https://repo.glaremasters.me/repository/towny/</url>
     </repository>
+    <repository>
+      <id>vault-repo</id>
+      <url>https://jitpack.io</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
@@ -61,6 +65,12 @@
       <groupId>com.palmergames.bukkit.towny</groupId>
       <artifactId>towny</artifactId>
       <version>0.100.3.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.MilkBowl</groupId>
+      <artifactId>VaultAPI</artifactId>
+      <version>1.7</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

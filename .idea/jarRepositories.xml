@@ -31,5 +31,10 @@
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="vault-repo" />
+      <option name="name" value="vault-repo" />
+      <option name="url" value="https://jitpack.io" />
+    </remote-repository>
   </component>
 </project>
