@@ -87,15 +87,15 @@ public class PlayerTracker implements Listener {
                 if (nation != null) {
                     playerData.put("nation", nation.getName());
                 } else {
-                    playerData.put("nation", "No Nation");
+                    playerData.put("nation", "");
                 }
             } else {
-                playerData.put("town", "No Town");
-                playerData.put("nation", "No Nation");
+                playerData.put("town", "");
+                playerData.put("nation", "");
             }
         } else {
-            playerData.put("town", "No Town");
-            playerData.put("nation", "No Nation");
+            playerData.put("town", "");
+            playerData.put("nation", "");
         }
     }
 }

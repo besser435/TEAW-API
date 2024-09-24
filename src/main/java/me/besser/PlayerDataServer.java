@@ -8,12 +8,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static java.util.logging.Level.*;
 import static me.besser.TAPILogger.log;
 
 public class PlayerDataServer {
     private final JavaPlugin plugin;
     private final PlayerTracker playerTracker;
+    private final TownyTracker townyTracker;
+
     //private final PlayerStatTracker playerStatTracker = new PlayerStatTracker();
     private final Gson gson = new Gson();
 
@@ -22,6 +27,7 @@ public class PlayerDataServer {
     public PlayerDataServer(JavaPlugin plugin, PlayerTracker playerTracker) {
         this.plugin = plugin;
         this.playerTracker = playerTracker;
+        this.townyTracker = new TownyTracker();
         initRoutes();
         log(INFO, "Initialized player data server");
     }
@@ -34,11 +40,24 @@ public class PlayerDataServer {
 
         port(serverPort);
 
+        // TODO: add catch any errors, return 500 if they occur
         get("/api/online_players", (request, response) -> {
             response.type("application/json");
 
-            // TODO: add catch any errors, return 500 if they occur
-            return gson.toJson(playerTracker.getOnlinePlayersInfo());
+            Map<String, Object> onlinePlayers = new HashMap<>();
+            onlinePlayers.put("online_players", playerTracker.getOnlinePlayersInfo());
+
+            return gson.toJson(onlinePlayers);
+        });
+
+        get("/api/towny", (request, response) -> {
+            response.type("application/json");
+
+            Map<String, Object> townyData = new HashMap<>();
+            townyData.put("towns", townyTracker.getTownData());
+            townyData.put("nations", townyTracker.getNationData());
+
+            return gson.toJson(townyData);
         });
 
 // Not enabled yet, may be added in a future update
