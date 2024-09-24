@@ -15,7 +15,7 @@ the server lives. The default is `1850`.
 ## Endpoints
 - `/api/online_players` GET
 
-  Returns a list of online players. It includes: `uuid`, `town`, `nation`, `afk`, `name`.
+  Returns a list of online players. It includes: `uuid`, `town`, `balance`, `nation`, `afk`, `name`.
 
   Example response:
   ```json
