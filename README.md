@@ -1,12 +1,13 @@
 # TEAW API
 TAPI is a super simple plugin that replaces Dynmap's ability to see online players, as Bluemap does not provide this
-when player positions are disabled. It also provides data from Towny.
+when player positions are disabled. It also provides data from Towny and Vault for even more information.
 
 The Towny and Bukkit APIs are very simple, so this could easily be expanded in the future if Theeno allows for it.
 
 ## Programmer Notes
 Spark is deprecated, transition to something else. <br>
-Maybe try to actually be compliant with the [json:api spec](https://jsonapi.org/).
+Try to actually be compliant with the [json:api spec](https://jsonapi.org/). <br>
+Store player statistics locally so that offline players can still be queried.
 
 ## Configuration
 TAPI implements a nano sized HTTP server for replying to requests. The only config option is the port at which
@@ -15,7 +16,7 @@ the server lives. The default is `1850`.
 ## Endpoints
 - `/api/online_players` GET
 
-  Returns a list of online players. It includes: `uuid`, `town`, `nation`, `afk`, `name`.
+  Returns a list of online players. It includes: `uuid`, `balance`, `town`, `nation`, `afk`, `name`, `title`.
 
   Example response:
   ```json
@@ -26,7 +27,8 @@ the server lives. The default is `1850`.
         "town": "TTown",
         "nation": "MyNation",
         "afk": true,
-        "name": "brandonusa"
+        "name": "brandonusa",
+        "title": "geccer"
       }
     }
   }
@@ -42,7 +44,7 @@ the server lives. The default is `1850`.
     "towns": {
       "8b3863d9-f83f-4e3b-a564-02fc06bdeda8": {
         "board": "money",
-        "town_size": 5,
+        "claimed_chunks": 5,
         "mayor": "brandonusa",
         "balance": 8907,
         "name": "TTown",
@@ -64,6 +66,46 @@ the server lives. The default is `1850`.
         "town_tax_dollars": 23,
         "founding_date": 1727145046624,
         "name": "MyNation"
+      }
+    }
+  }
+  ```
+
+- `/api/full_player_stats/:uuid` GET
+
+  Returns the three [statistics](https://minecraft.wiki/w/Statistics) categories for a given player UUID. Stats with 
+  a zero value will not be returned. The player must be online for success, otherwise it will return 404.
+
+  Example response:
+  ```json
+  {
+    "general": {
+      "DAMAGE_TAKEN": 230,
+      "LEAVE_GAME": 243,
+      "FALL_ONE_CM": 6911
+    },
+    "mob": {
+      "KILL_ENTITY": {
+        "FROG": 9,
+        "SALMON": 1,
+        "TRADER_LLAMA": 2
+      }
+    },
+    "item": {
+      "PICKUP": {
+        "DIAMOND_BLOCK": 1,
+        "DIAMOND": 3420,
+        "FISHING_ROD": 2
+      },
+      "USE_ITEM": {
+        "NETHERITE_BLOCK": 2,
+        "MANGROVE_LEAVES": 6,
+        "CREATE_MECHANICAL_BEARING": 9
+      },
+      "DROP": {
+        "CREATE_CREATIVE_FLUID_TANK": 1,
+        "DIAMOND": 340,
+        "FISHING_ROD": 1
       }
     }
   }

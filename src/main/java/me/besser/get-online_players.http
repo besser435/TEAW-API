@@ -1,3 +1,16 @@
 // @no-log
-GET http://localhost:1850/api/online_players
+// Get online players and some rmation about them
+GET http://192.168.0.157:1850/api/online_players
+###
 
+// Towny information
+GET http://192.168.0.157:1850/api/towny
+###
+
+// Full player statistics (player must be online)
+GET http://192.168.0.157:1850/api/full_player_stats/75418e9c-34ef-4926-af64-96d98d10954c
+###
+
+// Offline player stats (only returns stats under the general category)
+//GET http://192.168.0.157:1850/api/offline_player_stats/75418e9c-34ef-4926-af64-96d98d10954c
+// Disabled due to timeout bug

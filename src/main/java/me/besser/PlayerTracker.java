@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class PlayerTracker implements Listener {
@@ -82,17 +83,21 @@ public class PlayerTracker implements Listener {
     private void addTownyData(Player player, Map<String, Object> playerData) {
         Resident resident = TownyAPI.getInstance().getResident(player.getUniqueId());
 
+        // TODO: clean this, there are too many conditionals. See how its done in TownyTracker.java
         if (resident != null) {
             Town town = resident.getTownOrNull();
             if (town != null) {
                 playerData.put("town", town.getName());
 
                 Nation nation = town.getNationOrNull();
+                String title = resident.getTitle();
                 if (nation != null) {
                     playerData.put("nation", nation.getName());
                 } else {
                     playerData.put("nation", "");
                 }
+
+                playerData.put("title", Objects.requireNonNullElse(title, ""));
             } else {
                 playerData.put("town", "");
                 playerData.put("nation", "");
