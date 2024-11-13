@@ -41,7 +41,7 @@ public class TownyTracker {
             townData.put("residents", residents.stream().map(Resident::getName).toArray(String[]::new));
 
             int townSize = town.getTownBlocks().size();
-            townData.put("town_size", townSize);
+            townData.put("claimed_chunks", townSize);
 
             townDataMap.put(town.getUUID(), townData);
         }
