@@ -22,7 +22,11 @@ import java.util.UUID;
 
 public class PlayerTracker implements Listener {
     private final Map<Player, Long> lastMoveTime = new HashMap<>();
-    private final long AFK_THRESHOLD = 1000 * 180; // 3 minutes in milliseconds TODO: should be seconds in config.yml
+    private final int AFK_THRESHOLD;
+
+    public PlayerTracker(TAPI plugin) {
+        this.AFK_THRESHOLD = plugin.getConfig().getInt("tapi.afk_timeout", 180) * 1000;
+    }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {

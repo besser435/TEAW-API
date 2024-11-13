@@ -1,5 +1,9 @@
-tapi: # Enable or disable the plugin
+tapi:
+  # Enable or disable the plugin
   enable: true
+  # How long a player has to not move for in order to be counted as AFK (seconds)
+  afk_timeout: 180
 
-server: # The port where the API endpoints will be accessible
+server:
+  # The port where the API endpoints will be accessible
   port: 1850
