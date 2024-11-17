@@ -51,7 +51,7 @@ public class PlayerDataServer {
             return gson.toJson(onlinePlayers);
         });
 
-            get("/api/towny", (request, response) -> {
+        get("/api/towny", (request, response) -> {
             response.type("application/json");
 
             Map<String, Object> townyData = new HashMap<>();
@@ -61,20 +61,29 @@ public class PlayerDataServer {
             return gson.toJson(townyData);
         });
 
-        get("/api/full_player_stats/:uuid", (req, res) -> {
+        get("/api/full_player_stats/:uuid", (request, response) -> {
             // Requires the player to be online
 
-            String uuid = req.params("uuid");
-            res.type("application/json");
+            String uuid = request.params("uuid");
+            response.type("application/json");
 
             Player player = Bukkit.getPlayer(UUID.fromString(uuid));
             if (player == null) {
-                res.status(404);
+                response.status(404);
                 return gson.toJson("Player not found or may be offline.");// Offline player route: /api/offline_player_stats/:uuid");
             }
 
             return gson.toJson(playerStatTracker.getPlayerStatistics(player));
         });
+
+        // TODO: add endpoint for info about the API. Include version number and build time.
+//        get("/api/meta", (request, response) -> {
+//            response.type("application/json");
+//
+//
+//
+//            return gson.toJson(0);
+//        });
 
         // BUG, when the player is offline this takes ~8s to respond, and returns all data, not just the general stats. this wasn't the case before...
 //        get("/api/offline_player_stats/:uuid", (req, res) -> {
