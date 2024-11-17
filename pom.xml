@@ -41,6 +41,26 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- for build timestamps -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>timestamp-property</id>
+                        <goals>
+                            <goal>timestamp-property</goal>
+                        </goals>
+                        <configuration>
+                            <name>timestamp</name>
+                            <pattern>yyyy-MM-dd'T'HH:mm:ss'Z'</pattern>    <!-- ISO 8601 -->
+                            <timeZone>UTC</timeZone>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
         <resources>
             <resource>
