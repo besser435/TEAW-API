@@ -15,20 +15,26 @@ import java.util.UUID;
 
 import static me.besser.DIETLogger.*;
 
+/* TODO: rename class, it serves more than just player data. */
 public class PlayerDataServer {
+    // TODO: clean up private variables and constructors
     private final JavaPlugin plugin;
     private final PlayerTracker playerTracker;
     private final TownyTracker townyTracker;
+    private final ChatTracker chatTracker = new ChatTracker();
 
     private final PlayerStatTracker playerStatTracker = new PlayerStatTracker();
+    private final ServerInfoTracker serverInfoTracker;
+
     private final Gson gson = new Gson();
 
-    // TODO: Spark is deprecated. Transition to Javalin
 
     public PlayerDataServer(JavaPlugin plugin, PlayerTracker playerTracker) {
         this.plugin = plugin;
         this.playerTracker = playerTracker;
         this.townyTracker = new TownyTracker();
+        this.serverInfoTracker = new ServerInfoTracker((TAPI) plugin);
+
         initRoutes();
         log(INFO, "Initialized player data server");
     }
@@ -40,6 +46,8 @@ public class PlayerDataServer {
         int serverPort = config.getInt("server.port", 1850);
 
         port(serverPort);
+        // TODO: Spark is deprecated. Transition to Javalin
+
 
         // TODO: add catch any errors, return 500 if they occur
         get("/api/online_players", (request, response) -> {
@@ -75,6 +83,22 @@ public class PlayerDataServer {
 
             return gson.toJson(playerStatTracker.getPlayerStatistics(player));
         });
+
+        get("/api/server_info", (request, response) -> {
+            response.type("application/json");
+
+            Map<String, Object> serverInfo = serverInfoTracker.getServerInfo();
+            return gson.toJson(serverInfo);
+        });
+
+        get("/api/chat_history", (request, response) -> {
+            // TODO: make it so we can query for messages only after a certain timestamp
+            response.type("application/json");
+
+            return gson.toJson(chatTracker.getLastMessages());
+        });
+
+
 
         // TODO: add endpoint for info about the API. Include version number and build time.
 //        get("/api/meta", (request, response) -> {

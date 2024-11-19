@@ -29,10 +29,21 @@ public final class TAPI extends JavaPlugin {
 
         saveDefaultConfig();
 
+
+        // Player info
         PlayerTracker playerTracker = new PlayerTracker(this);
         getServer().getPluginManager().registerEvents(playerTracker, this);
 
+        // Sever Info
+        ServerInfoTracker serverInfoTracker = new ServerInfoTracker(this);
+
+
+
+
+        // API server
+        //TODO: its more than a player API. Rename to TAPIDataServer
         new PlayerDataServer(this, playerTracker);
+
 
         log(INFO, ChatColor.AQUA + "TEAW API " + ChatColor.GOLD + "v" + getDescription().getVersion() + ChatColor.RESET + " started!");
     }

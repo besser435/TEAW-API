@@ -13,6 +13,16 @@ GET http://192.168.0.157:1850/api/towny
 GET http://192.168.0.157:1850/api/full_player_stats/75418e9c-34ef-4926-af64-96d98d10954c
 ###
 
+// Server info
+//@no-log
+GET http://192.168.0.157:1850/api/server_info
+###
+
+// Chat history
+//@no-log
+GET http://192.168.0.157:1850/api/chat_history
+###
+
 // Offline player stats (only returns stats under the general category)
 //@no-log
 //GET http://192.168.0.157:1850/api/offline_player_stats/75418e9c-34ef-4926-af64-96d98d10954c
