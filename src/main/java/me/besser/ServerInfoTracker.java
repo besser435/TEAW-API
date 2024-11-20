@@ -22,30 +22,17 @@ public class ServerInfoTracker {
     }
 
 
-    public Map<String, Object> getServerInfo() {    // TODO: there should be this (getServerInfo) and getWorldInfo.
+    public Map<String, Object> getServerInfo() {
         Map<String, Object> serverInfo = new HashMap<>();
 
-        // World stuff
         World world = Bukkit.getWorlds().get(0);    // might cause issues if using BungeeCord
 
-
-        // Online players
-        // TODO: just add this to the PlayerTracker class, along with the max player count
-        //int onlinePlayerCount = Bukkit.getOnlinePlayers().size();
-        //serverInfo.put("online_players", onlinePlayerCount);
-
-
-        // Add the stuff
         serverInfo.put("weather", getWorldWeather(world));
         serverInfo.put("world_time_ticks", world.getTime());
         serverInfo.put("world_time_24h", convertTicksTo24HourFormat(world.getTime()));
 
         serverInfo.put("tapi_version", getTAPIVersionAndBuildTime());
         serverInfo.put("server_version", Bukkit.getVersion());
-
-        serverInfo.put("server_motd", ChatColor.stripColor(Bukkit.getMotd()));
-        serverInfo.put("loaded_chunks", getTotalLoadedChunks());
-        serverInfo.put("entities", getTotalEntities());
 
         return serverInfo;
     }
@@ -61,18 +48,6 @@ public class ServerInfoTracker {
         } else {
             return "Clear";
         }
-    }
-
-    private int getTotalLoadedChunks() {
-        return Bukkit.getWorlds().stream()
-                .mapToInt(world -> world.getLoadedChunks().length)
-                .sum();
-    }
-
-    private int getTotalEntities() {
-        return Bukkit.getWorlds().stream()
-                .mapToInt(world -> world.getEntities().size())
-                .sum();
     }
 
     private String getTAPIVersionAndBuildTime() {

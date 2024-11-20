@@ -17,6 +17,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+/*
+TODO: Update readme docs.
+TODO: Add DiscordSRV support do the discord messages show up here
+
+ */
 public class ChatTracker implements Listener {
     private final List<ChatMessage> messageHistory = new LinkedList<>();
 
@@ -40,7 +45,7 @@ public class ChatTracker implements Listener {
             addMessage(new ChatMessage(
                     event.getPlayer().getName(),
                     event.getMessage(),
-                    Instant.now().getEpochSecond(),
+                    System.currentTimeMillis(),
                     "msg"
             ));
         }
@@ -53,7 +58,7 @@ public class ChatTracker implements Listener {
         addMessage(new ChatMessage(
                 "SERVER",
                 joinMessage,
-                Instant.now().getEpochSecond(),
+                System.currentTimeMillis(),
                 "join"
         ));
     }
@@ -65,7 +70,7 @@ public class ChatTracker implements Listener {
         addMessage(new ChatMessage(
                 "SERVER",
                 quitMessage,
-                Instant.now().getEpochSecond(),
+                System.currentTimeMillis(),
                 "quit"
         ));
     }
@@ -75,22 +80,25 @@ public class ChatTracker implements Listener {
         addMessage(new ChatMessage(
                 "SERVER",
                 event.getDeathMessage(),
-                Instant.now().getEpochSecond(),
+                System.currentTimeMillis(),
                 "death"
         ));
     }
 
     @EventHandler
     public synchronized void onPlayerAdvancement(PlayerAdvancementDoneEvent event) {
-        String advancementName = Objects.requireNonNull(event.getAdvancement().getDisplay()).getTitle();
-        String message = event.getPlayer().getName() + " has completed the advancement [" + advancementName + "]";
+        if (event.getAdvancement().getDisplay() != null) {
+            String advancementName = event.getAdvancement().getDisplay().getTitle();
+            //String advancementDescription = event.getAdvancement().getDisplay().getDescription();     // disabled due to it showing control codes
+            String message = event.getPlayer().getName() + " has completed the advancement [" + advancementName + "]"; // (" + advancementDescription + ")";
 
-        addMessage(new ChatMessage(
-                "SERVER",
-                message,
-                Instant.now().getEpochSecond(),
-                "advancement"
-        ));
+            addMessage(new ChatMessage(
+                    "SERVER",
+                    message,
+                    System.currentTimeMillis(),
+                    "advancement"
+            ));
+        }
     }
 
     private void addMessage(ChatMessage chatMessage) {

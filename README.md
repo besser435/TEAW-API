@@ -111,6 +111,53 @@ the server lives. The default is `1850`.
   }
   ```
   
+- `/api/chat_history` GET
+
+  Returns a list of the last 200 chat messages. An optional `time` argument can be provided, where only messages after
+  the timestamp are provided. The `time` argument is a Unix epoch in milliseconds.
+  ```json
+  [
+    {
+      "sender": "SERVER",
+      "message": "brandonusa joined the game",
+      "timestamp": 1732104771419,
+      "type": "join"
+    },
+    {
+      "sender": "SERVER",
+      "message": "brandonusa has completed the advancement [A Pair of Giants]",
+      "timestamp": 1732104772574,
+      "type": "advancement"
+    },
+    {
+      "sender": "brandonusa",
+      "message": "no way, a large pair",
+      "timestamp": 1732104786820,
+      "type": "msg"
+    },
+    {
+      "sender": "SERVER",
+      "message": "brandonusa left the game",
+      "timestamp": 1732104792573,
+      "type": "quit"
+    }
+  ]
+  ```
+
+- `/api/server_info` GET
+  
+  Returns some info about the server and world.
+  ```json
+  {
+    "tapi_version": "TAPI v1.3.0, Build 2024-11-20T12:10:35Z",
+    "world_time_24h": "18:18",
+    "weather": "Clear",
+    "world_time_ticks": 12309,
+    "server_version": "arclight-1.20.1-1.0.5-1a8925b (MC: 1.20.1)"
+  }
+  
+  ```
+
 ## Building
 The plugin is built with Maven, and is edited with IntelliJ IDEA. It is free for students.
 [This video](https://www.youtube.com/watch?v=s1xg9eJeP3E) is helpful for getting started.

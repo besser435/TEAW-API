@@ -18,12 +18,13 @@ GET http://192.168.0.157:1850/api/full_player_stats/75418e9c-34ef-4926-af64-96d9
 GET http://192.168.0.157:1850/api/server_info
 ###
 
-// Chat history
+// Chat history with time option
 //@no-log
-GET http://192.168.0.157:1850/api/chat_history
+GET http://192.168.0.157:1850/api/chat_history?time=1700000000
 ###
 
 // Offline player stats (only returns stats under the general category)
 //@no-log
 //GET http://192.168.0.157:1850/api/offline_player_stats/75418e9c-34ef-4926-af64-96d98d10954c
 // Disabled due to timeout bug
+

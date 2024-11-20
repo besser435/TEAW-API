@@ -23,7 +23,6 @@ public class TownyTracker {
             townData.put("name", town.getName());
             townData.put("founding_date", town.getRegistered());
 
-
             Nation nation = town.getNationOrNull();
             townData.put("nation", (nation != null) ? nation.getName() : "");
 
@@ -38,7 +37,7 @@ public class TownyTracker {
             townData.put("resident_tax_percent", town.getTaxes());
 
             List<Resident> residents = town.getResidents();
-            townData.put("residents", residents.stream().map(Resident::getName).toArray(String[]::new));
+            townData.put("residents", residents.stream().map(Resident::getUUID).toArray(UUID[]::new));
 
             int townSize = town.getTownBlocks().size();
             townData.put("claimed_chunks", townSize);
