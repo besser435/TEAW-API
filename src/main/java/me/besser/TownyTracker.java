@@ -4,17 +4,34 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import com.earth2me.essentials.Essentials;
+import com.earth2me.essentials.User;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.plugin.Plugin;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static me.besser.DIETLogger.*;
+
 public class TownyTracker {
+    private static final long FOURTEEN_DAYS_MILLIS = 1000L * 60 * 60 * 24 * 14;
+    private final Essentials essentials;
+
+    public TownyTracker() {
+        Plugin essentials = Bukkit.getServer().getPluginManager().getPlugin("Essentials");
+        if (essentials instanceof Essentials) {
+            this.essentials = (Essentials) essentials;
+        } else {
+            throw new IllegalStateException("Essentials plugin not found!");
+        }
+    }
+
     public Map<UUID, Map<String, Object>> getTownData() {
-        // TODO: UUIDs should be used in addition to names.
+        // TODO: player UUIDs should be used in addition to names.
         Map<UUID, Map<String, Object>> townDataMap = new HashMap<>();
 
         for (Town town : TownyAPI.getInstance().getTowns()) {
@@ -22,6 +39,9 @@ public class TownyTracker {
 
             townData.put("name", town.getName());
             townData.put("founding_date", town.getRegistered());
+
+            Boolean isActive = isTownActive(town);
+            townData.put("is_active", isActive);
 
             Nation nation = town.getNationOrNull();
             townData.put("nation", (nation != null) ? nation.getName() : "");
@@ -48,7 +68,7 @@ public class TownyTracker {
     }
 
     public Map<UUID, Map<String, Object>> getNationData() {
-        // TODO: UUIDs should be used in addition to names.
+        // TODO: player and town UUIDs should be used in addition to names.
         // Things like capitol_town should return the name, and UUID.
         Map<UUID, Map<String, Object>> nationDataMap = new HashMap<>();
 
@@ -73,21 +93,40 @@ public class TownyTracker {
         return nationDataMap;
     }
 
-//    // Checks if 20% or more of the towns residents have been online in the last 14 days
-//    private static final long FOURTEEN_DAYS_MILLIS = 1000L * 60 * 60 * 24 * 14;
-//
-//    public boolean isTownActive(Town town) {
-//        List<Resident> residents = town.getResidents();
-//        int totalResidents = residents.size();
-//
-//        long currentTime = System.currentTimeMillis();
-//        int activePlayers = 0;
-//
-//        for (Resident resident : residents) {
-//            // Use Essentials API to get the last time someone was online. Spigot can't do this.
-//        }
-//
-//        double activePercentage = (double) activePlayers / totalResidents;
-//        return activePercentage >= 0.20;
-//    }
+    /**
+     * Determines whether a town is active based on the activity of its residents.
+     * A town is considered active if at least 30% of its residents have been online
+     * within the last 14 days. The activity status of each resident is determined
+     * using the Essentials API to check their last logout time.
+     *
+     * @param town the {@link Town} to evaluate for activity.
+     * @return {@code true} if the town is active (20% or more of its residents have
+     *         logged in within the last 14 days), otherwise {@code false}.
+     */
+    public boolean isTownActive(Town town) {
+        List<Resident> residents = town.getResidents();
+        int totalResidents = residents.size();
+
+        if (totalResidents == 0) {
+            return false;
+        }
+
+        long currentTime = System.currentTimeMillis();
+        int activePlayers = 0;
+
+        for (Resident resident : residents) {
+            UUID uuid = resident.getUUID();
+            User user = essentials.getUser(uuid);
+
+            if (user != null) {
+                long lastLogout = user.getLastLogout();
+                if (currentTime - lastLogout <= FOURTEEN_DAYS_MILLIS) {
+                    activePlayers++;
+                }
+            }
+        }
+
+        double activePercentage = (double) activePlayers / totalResidents;
+        return activePercentage >= 0.30;
+    }
 }

@@ -1,6 +1,8 @@
 package me.besser;
 
+import github.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.ChatColor;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import net.milkbowl.vault.economy.Economy;
@@ -13,6 +15,7 @@ public final class TAPI extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        // TODO: clean up private variables and constructors
         DIETLogger.initialize(this);
 
         boolean isEnabledInConfig = getConfig().getBoolean("tapi.enable", true);
@@ -22,6 +25,7 @@ public final class TAPI extends JavaPlugin {
             return;
         }
 
+        // TODO: clean up checks or required plugins. we only have like 2, even though we rely on several plugins.
         if (!setupEconomy()) {
             log(SEVERE, "Vault is not found! This may cause bugs when responding to API requests");
             return;
@@ -34,16 +38,11 @@ public final class TAPI extends JavaPlugin {
         PlayerTracker playerTracker = new PlayerTracker(this);
         getServer().getPluginManager().registerEvents(playerTracker, this);
 
-        // Sever Info
+        // Sever info
         ServerInfoTracker serverInfoTracker = new ServerInfoTracker(this);
 
-
-
-
         // API server
-        //TODO: its more than a player API. Rename to TAPIDataServer
         new EndpointServer(this, playerTracker);
-
 
         log(INFO, ChatColor.AQUA + "TEAW API " + ChatColor.GOLD + "v" + getDescription().getVersion() + ChatColor.RESET + " started!");
     }
@@ -58,7 +57,7 @@ public final class TAPI extends JavaPlugin {
             return false;
         }
         econ = rsp.getProvider();
-        return econ != null;
+        return true;
     }
 
     public static Economy getEconomy() {

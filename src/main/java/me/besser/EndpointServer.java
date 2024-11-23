@@ -3,6 +3,7 @@ package me.besser;
 import static spark.Spark.*;
 import com.google.gson.Gson;
 
+import github.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,23 +16,24 @@ import java.util.UUID;
 import static me.besser.DIETLogger.*;
 
 public class EndpointServer {
-    // TODO: clean up private variables and constructors
+    // TODO: clean up private variables and constructors.
     private final JavaPlugin plugin;
     private final PlayerTracker playerTracker;
     private final TownyTracker townyTracker;
-    private final ChatTracker chatTracker = new ChatTracker();
-
-    private final PlayerStatTracker playerStatTracker = new PlayerStatTracker();
     private final ServerInfoTracker serverInfoTracker;
+    private final ChatTracker chatTracker = new ChatTracker();
+    private final PlayerStatTracker playerStatTracker = new PlayerStatTracker();
 
     private final Gson gson = new Gson();
 
-
     public EndpointServer(JavaPlugin plugin, PlayerTracker playerTracker) {
+        // TODO: Why the hell are these created here and not in the main class
         this.plugin = plugin;
         this.playerTracker = playerTracker;
         this.townyTracker = new TownyTracker();
         this.serverInfoTracker = new ServerInfoTracker((TAPI) plugin);
+
+        DiscordSRV.api.subscribe(chatTracker);
 
         initRoutes();
     }

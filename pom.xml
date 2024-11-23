@@ -87,6 +87,18 @@
             <id>vault-repo</id>
             <url>https://jitpack.io</url>
         </repository>
+        <repository>
+            <id>paper-repo</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>essentials-releases</id>
+            <url>https://repo.essentialsx.net/releases/</url>
+        </repository>
+        <repository>
+            <id>Scarsz-Nexus</id>
+            <url>https://nexus.scarsz.me/content/groups/public/</url>
+        </repository>
     </repositories>
 
     <!-- Ensure building the depends don't conflict with what is already on the server. -->
@@ -124,13 +136,18 @@
             <version>1.7</version>
             <scope>provided</scope>
         </dependency>
-
-        <!-- Import copied from Dynmap plugin. This is stupid, there are no API docs for TownyChat. -->
-<!--        <dependency>-->
-<!--            <groupId>com.github.TownyAdvanced</groupId>-->
-<!--            <artifactId>TownyChat</artifactId>-->
-<!--            <version>0.90</version>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
+         <!-- https://essentialsx.net/wiki/Common-Issues.html#how-do-i-add-essentialsx-as-a-dependency -->
+        <dependency>
+            <groupId>net.essentialsx</groupId>
+            <artifactId>EssentialsX</artifactId>
+            <version>2.20.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.discordsrv</groupId>
+            <artifactId>discordsrv</artifactId>
+            <version>1.28.0</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

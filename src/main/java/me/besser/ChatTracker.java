@@ -10,20 +10,16 @@ import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import static me.besser.DIETLogger.*;
+import github.scarsz.discordsrv.api.ListenerPriority;
+import github.scarsz.discordsrv.api.Subscribe;
+import github.scarsz.discordsrv.api.events.DiscordGuildMessageReceivedEvent;
 
-import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
-/*
-TODO: Update readme docs.
-TODO: Add DiscordSRV support do the discord messages show up here
 
- */
 public class ChatTracker implements Listener {
-    private final List<ChatMessage> messageHistory = new LinkedList<>();
+    private final List<chatMessage> messageHistory = new LinkedList<>();
 
     private static final int MAX_MESSAGES = 200;
 
@@ -31,7 +27,7 @@ public class ChatTracker implements Listener {
         Bukkit.getPluginManager().registerEvents(this, Bukkit.getPluginManager().getPlugin("TAPI"));
     }
 
-    public synchronized List<ChatMessage> getLastMessages() {
+    public synchronized List<chatMessage> getLastMessages() {
         return new LinkedList<>(messageHistory); // Return a copy to prevent modification
     }
 
@@ -39,14 +35,14 @@ public class ChatTracker implements Listener {
     public synchronized void onPlayerChat(AsyncPlayerChatEvent event) {
         String cleanFormat = event.getFormat().replaceAll("§.", "");
 
-        // Hacky as fuck, to ensure we only get the general chats and not private town/nation ones.
+        // Hacky as fuck. Ensure we only get the general chats and not private town/nation ones.
         // See comments in the TownyListenerAttempt file.
         if (cleanFormat.charAt(1) == 'g') {
-            addMessage(new ChatMessage(
-                    event.getPlayer().getName(),
-                    event.getMessage(),
-                    System.currentTimeMillis(),
-                    "msg"
+            addMessage(new chatMessage(
+                event.getPlayer().getName(),
+                event.getMessage(),
+                System.currentTimeMillis(),
+                msgType.chat
             ));
         }
     }
@@ -55,11 +51,11 @@ public class ChatTracker implements Listener {
     public synchronized void onPlayerJoin(PlayerJoinEvent event) {
         String joinMessage = event.getPlayer().getName() + " joined the game";
 
-        addMessage(new ChatMessage(
-                "SERVER",
-                joinMessage,
-                System.currentTimeMillis(),
-                "join"
+        addMessage(new chatMessage(
+            "SERVER",
+            joinMessage,
+            System.currentTimeMillis(),
+            msgType.join
         ));
     }
 
@@ -67,21 +63,21 @@ public class ChatTracker implements Listener {
     public synchronized void onPlayerQuit(PlayerQuitEvent event) {
         String quitMessage = event.getPlayer().getName() + " left the game";
 
-        addMessage(new ChatMessage(
-                "SERVER",
-                quitMessage,
-                System.currentTimeMillis(),
-                "quit"
+        addMessage(new chatMessage(
+            "SERVER",
+            quitMessage,
+            System.currentTimeMillis(),
+            msgType.quit
         ));
     }
 
     @EventHandler
     public synchronized void onPlayerDeath(PlayerDeathEvent event) {
-        addMessage(new ChatMessage(
-                "SERVER",
-                event.getDeathMessage(),
-                System.currentTimeMillis(),
-                "death"
+        addMessage(new chatMessage(
+            "SERVER",
+            event.getDeathMessage(),
+            System.currentTimeMillis(),
+            msgType.death
         ));
     }
 
@@ -92,26 +88,41 @@ public class ChatTracker implements Listener {
             //String advancementDescription = event.getAdvancement().getDisplay().getDescription();     // disabled due to it showing control codes
             String message = event.getPlayer().getName() + " has completed the advancement [" + advancementName + "]"; // (" + advancementDescription + ")";
 
-            addMessage(new ChatMessage(
-                    "SERVER",
-                    message,
-                    System.currentTimeMillis(),
-                    "advancement"
+            addMessage(new chatMessage(
+                "SERVER",
+                message,
+                System.currentTimeMillis(),
+                msgType.advancement
             ));
         }
     }
 
-    private void addMessage(ChatMessage chatMessage) {
+    @Subscribe(priority = ListenerPriority.NORMAL)
+    public void onDiscordMessage(DiscordGuildMessageReceivedEvent event) {
+        addMessage(new chatMessage(
+            event.getAuthor().getName(),
+            event.getMessage().getContentRaw(),
+            System.currentTimeMillis(),
+            msgType.discord
+        ));
+    }
+
+    private void addMessage(chatMessage message) {
         if (messageHistory.size() >= MAX_MESSAGES) {
             messageHistory.remove(0);
         }
-        messageHistory.add(chatMessage);
+        messageHistory.add(message);
     }
 
-    public record ChatMessage(String sender, String message, long timestamp, String type) { // ok java has some cool features...
-        @Override
-        public String toString() {
-            return String.format("[%d] %s: %s", timestamp, sender, message);
-        }
+    public record chatMessage(String sender, String message, long timestamp, msgType type) {}     // ok java has some cool features...
+
+    enum msgType {  // Enums should be capitalized, but they should to be lowercase for the JSON so screw it
+        chat,
+        discord,
+        join,
+        quit,
+        advancement,
+        death
     }
 }
+

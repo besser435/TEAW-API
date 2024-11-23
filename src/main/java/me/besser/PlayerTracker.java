@@ -65,15 +65,21 @@ public class PlayerTracker implements Listener {
         Economy economy = TAPI.getEconomy();
 
         for (Player player : org.bukkit.Bukkit.getOnlinePlayers()) {
-            boolean isAFK = isPlayerAFK(player);
-
             JsonObject playerData = new JsonObject();
+
             playerData.addProperty("name", player.getName());
+
+            boolean isAFK = isPlayerAFK(player);
             playerData.addProperty("afk", isAFK);
 
             double balance = economy.getBalance(player);
             BigDecimal bd = new BigDecimal(balance).setScale(2, RoundingMode.HALF_UP);
             playerData.addProperty("balance", bd.doubleValue());
+
+            // Future offline player endpoint field
+            //User user = essentials.getUser(player.getUniqueId());
+            //long lastOnline = user.getLastLogout();
+            //playerData.addProperty("last_online", lastOnline);
 
             addTownyData(player, playerData);
 
