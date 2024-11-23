@@ -1,4 +1,4 @@
-// Get online players and some rmation about them\
+// Get online players and some rmation about them
 //@no-log
 GET http://192.168.0.157:1850/api/online_players
 ###

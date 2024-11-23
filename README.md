@@ -14,9 +14,12 @@ TAPI implements a nano sized HTTP server for replying to requests. The only conf
 the server lives. The default is `1850`.
 
 ## Endpoints
+  Most endpoint feilds are self explanitory. Where they are not, there will be a note.
+
+
 - `/api/online_players` GET
 
-  Returns a list of online players. It includes: `uuid`, `balance`, `town`, `nation`, `afk`, `name`, `title`.
+  Returns a list of online players.
 
   Example response:
   ```json
@@ -37,13 +40,17 @@ the server lives. The default is `1850`.
 - `/api/towny` GET
 
   Returns a list of towns and nations from the Towny plugin. It includes: `towns`, `nations`.
-  
+
+  `is_active` is whether the town is active or not. A town is considered active if 30% or more of its residents
+  have logged on in the last 14 days.
+- 
   Example response:
   ```json
   {
     "towns": {
       "8b3863d9-f83f-4e3b-a564-02fc06bdeda8": {
         "board": "money",
+        "is_active": true,
         "claimed_chunks": 5,
         "mayor": "brandonusa",
         "balance": 8907,
@@ -115,6 +122,8 @@ the server lives. The default is `1850`.
 
   Returns a list of the last 200 chat messages. An optional `time` argument can be provided, where only messages after
   the timestamp are provided. The `time` argument is a Unix epoch in milliseconds.
+  Ex: `/api/chat_history?time=1700000000`
+  The different message types are `chat`, `discord`, `join`, `quit`, `death`, & `advancement`.
   ```json
   [
     {
@@ -133,7 +142,13 @@ the server lives. The default is `1850`.
       "sender": "brandonusa",
       "message": "no way, a large pair",
       "timestamp": 1732104786820,
-      "type": "msg"
+      "type": "chat"
+    },
+    {
+      "sender": "besser",
+      "message": "chatting rn",
+      "timestamp": 1732104787311,
+      "type": "discord"
     },
     {
       "sender": "SERVER",
