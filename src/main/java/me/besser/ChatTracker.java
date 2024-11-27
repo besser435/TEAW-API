@@ -16,6 +16,7 @@ import github.scarsz.discordsrv.api.events.DiscordGuildMessageReceivedEvent;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.time.Instant;
 
 
 public class ChatTracker implements Listener {
@@ -41,7 +42,7 @@ public class ChatTracker implements Listener {
             addMessage(new chatMessage(
                 event.getPlayer().getName(),
                 event.getMessage(),
-                System.currentTimeMillis(),
+                Instant.now().toEpochMilli(),
                 msgType.chat
             ));
         }
@@ -54,7 +55,7 @@ public class ChatTracker implements Listener {
         addMessage(new chatMessage(
             "SERVER",
             joinMessage,
-            System.currentTimeMillis(),
+            Instant.now().toEpochMilli(),
             msgType.join
         ));
     }
@@ -66,7 +67,7 @@ public class ChatTracker implements Listener {
         addMessage(new chatMessage(
             "SERVER",
             quitMessage,
-            System.currentTimeMillis(),
+            Instant.now().toEpochMilli(),
             msgType.quit
         ));
     }
@@ -76,7 +77,7 @@ public class ChatTracker implements Listener {
         addMessage(new chatMessage(
             "SERVER",
             event.getDeathMessage(),
-            System.currentTimeMillis(),
+            Instant.now().toEpochMilli(),
             msgType.death
         ));
     }
@@ -91,7 +92,7 @@ public class ChatTracker implements Listener {
             addMessage(new chatMessage(
                 "SERVER",
                 message,
-                System.currentTimeMillis(),
+                Instant.now().toEpochMilli(),
                 msgType.advancement
             ));
         }
@@ -102,7 +103,7 @@ public class ChatTracker implements Listener {
         addMessage(new chatMessage(
             event.getAuthor().getName(),
             event.getMessage().getContentRaw(),
-            System.currentTimeMillis(),
+            Instant.now().toEpochMilli(),
             msgType.discord
         ));
     }

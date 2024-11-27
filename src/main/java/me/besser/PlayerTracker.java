@@ -24,41 +24,63 @@ import java.util.Objects;
 
 public class PlayerTracker implements Listener {
     private final Map<Player, Long> lastMoveTime = new HashMap<>();
+    private final Map<Player, Long> joinTime = new HashMap<>();
     private final int AFK_THRESHOLD;
 
     public PlayerTracker(TAPI plugin) {
-        this.AFK_THRESHOLD = plugin.getConfig().getInt("tapi.afk_timeout", 180);
+        this.AFK_THRESHOLD = plugin.getConfig().getInt("tapi.afk_timeout", 180) * 1000;
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        lastMoveTime.put(player, Instant.now().getEpochSecond());
+        long currentTime = Instant.now().toEpochMilli();
+        lastMoveTime.put(player, currentTime);
+        joinTime.put(player, currentTime);
     }
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        lastMoveTime.put(player, Instant.now().getEpochSecond());
+        lastMoveTime.put(player, Instant.now().toEpochMilli());
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         lastMoveTime.remove(player);
+        joinTime.remove(player);
     }
 
-    public boolean isPlayerAFK(Player player) {
-        long lastMove = lastMoveTime.getOrDefault(player, Instant.now().getEpochSecond());
-        return (Instant.now().getEpochSecond() - lastMove) > AFK_THRESHOLD;
+    /**
+     Returns the AFK duration for a player in milliseconds if they are AFK.
+     If the player has moved within the AFK threshold, this method returns 0.
+     Otherwise, it returns the number of seconds since the player's last movement.
+
+     @return The AFK time in seconds. Returns 0 if the player is not AFK.
+     */
+    public int getPlayerAFKDuration(Player player) {
+        long lastMove = lastMoveTime.getOrDefault(player, Instant.now().toEpochMilli());
+        long currentTime = Instant.now().toEpochMilli();
+        long afkDuration = currentTime - lastMove;
+
+        return afkDuration > AFK_THRESHOLD ? (int) afkDuration : 0;
+    }
+
+    /**
+     Returns how long a player has been online in milliseconds. Keeps counting while the player is AFK
+
+     @return The total online time in seconds. Returns 0 if the player is not tracked.
+     */
+    public int getPlayerOnlineDuration(Player player) {
+        long joinTimestamp = joinTime.getOrDefault(player, Instant.now().toEpochMilli());
+        long currentTime = Instant.now().toEpochMilli();
+
+        return (int) (currentTime - joinTimestamp);
     }
 
     public JsonObject getOnlinePlayersInfo() {
         JsonObject result = new JsonObject();
-
-        // Add the online player count
-        //int onlinePlayerCount = org.bukkit.Bukkit.getOnlinePlayers().size();
-        //result.addProperty("online_player_count", onlinePlayerCount);
 
         // Add player information keyed by UUID
         JsonObject playersObject = new JsonObject();
@@ -69,8 +91,9 @@ public class PlayerTracker implements Listener {
 
             playerData.addProperty("name", player.getName());
 
-            boolean isAFK = isPlayerAFK(player);
-            playerData.addProperty("afk", isAFK);
+            playerData.addProperty("online_duration", getPlayerOnlineDuration(player));
+
+            playerData.addProperty("afk_duration", getPlayerAFKDuration(player));
 
             double balance = economy.getBalance(player);
             BigDecimal bd = new BigDecimal(balance).setScale(2, RoundingMode.HALF_UP);

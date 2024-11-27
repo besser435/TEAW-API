@@ -4,8 +4,8 @@ when player positions are disabled. It also provides data from Towny and Vault f
 
 The Towny and Bukkit APIs are very simple, so this could easily be expanded in the future if Theeno allows for it.
 
-## Programmer Notes
-Spark is deprecated, transition to something else. <br>
+## Programmer Notes & To Do
+Spark isn't updated anymore, transition to something else like Javalin. <br>
 Try to actually be compliant with the [json:api spec](https://jsonapi.org/). <br>
 Store player statistics locally so that offline players can still be queried.
 
