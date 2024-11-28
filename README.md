@@ -21,17 +21,22 @@ the server lives. The default is `1850`.
 
 Returns a list of online players.
 
+`afk_duration` Is the AFK duration for a player in milliseconds if they are AFK.
+If the player has moved within the configured AFK threshold, this will be 0.
+
+
 Example response:
 ```json
 {
   "online_players": {
     "75418e9c-34ef-4926-af64-96d98d10954c": {
-      "balance": 8234.15,
-      "town": "TTown",
-      "nation": "MyNation",
-      "afk": true,
       "name": "brandonusa",
-      "title": "geccer"
+      "online_duration": 245271,
+      "afk_duration": 0,
+      "balance": 9253.25,
+      "town_name": "TTown",
+      "nation_name": "GexNation",
+      "title": ""
     }
   }
 }
@@ -50,6 +55,7 @@ Example response:
   "towns": {
     "8b3863d9-f83f-4e3b-a564-02fc06bdeda8": {
       "board": "money",
+      "tag": "TT",
       "is_active": true,
       "claimed_chunks": 5,
       "mayor": "brandonusa",
@@ -57,10 +63,10 @@ Example response:
       "name": "TTown",
       "founder": "brandonusa",
       "residents": [
-        "brandonusa"
+        "75418e9c-34ef-4926-af64-96d98d10954c"
       ],
       "nation": "GexNation",
-      "founding_date": 1725790166670,
+      "founded": 1725790166670,
       "resident_tax_percent": 23
     }
   },
@@ -69,9 +75,10 @@ Example response:
       "leader": "brandonusa",
       "capitol_town": "TTown",
       "board": "/nation set board [msg]",
+      "tag": "MN",
       "balance": 2000,
       "town_tax_dollars": 23,
-      "founding_date": 1727145046624,
+      "founded": 1727145046624,
       "name": "MyNation"
     }
   }
@@ -166,6 +173,7 @@ Returns some info about the server and world.
 {
   "tapi_version": "TAPI v1.3.0, Build 2024-11-20T12:10:35Z",
   "world_time_24h": "18:18",
+  "system_time": 1732104992823,
   "weather": "Clear",
   "world_time_ticks": 12309,
   "server_version": "arclight-1.20.1-1.0.5-1a8925b (MC: 1.20.1)"

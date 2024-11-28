@@ -3,6 +3,7 @@ package me.besser;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ public class ServerInfoTracker {
 
         serverInfo.put("tapi_version", getTAPIVersionAndBuildTime());
         serverInfo.put("server_version", Bukkit.getVersion());
+        serverInfo.put("system_time", Instant.now().toEpochMilli());
 
         return serverInfo;
     }

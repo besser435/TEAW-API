@@ -38,7 +38,7 @@ public class TownyTracker {
             Map<String, Object> townData = new HashMap<>();
 
             townData.put("name", town.getName());
-            townData.put("founding_date", town.getRegistered());
+            townData.put("founded", town.getRegistered());
 
             Boolean isActive = isTownActive(town);
             townData.put("is_active", isActive);
@@ -53,6 +53,7 @@ public class TownyTracker {
             townData.put("mayor", (mayor != null) ? mayor.getName() : "");
 
             townData.put("board", town.getBoard());
+            townData.put("tag", town.getTag());
             townData.put("balance", town.getAccount().getHoldingBalance());
             townData.put("resident_tax_percent", town.getTaxes());
 
@@ -76,7 +77,7 @@ public class TownyTracker {
             Map<String, Object> nationData = new HashMap<>();
 
             nationData.put("name", nation.getName());
-            nationData.put("founding_date", nation.getRegistered());
+            nationData.put("founded", nation.getRegistered());
 
             Resident leader = nation.getKing(); // Towny is so not based or woke :(
             nationData.put("leader", (leader != null) ? leader.getName() : "");
@@ -85,6 +86,7 @@ public class TownyTracker {
             nationData.put("capitol_town", (capital != null) ? capital.getName() : "");
 
             nationData.put("board", nation.getBoard());
+            nationData.put("tag", nation.getTag());
             nationData.put("balance", nation.getAccount().getHoldingBalance());
             nationData.put("town_tax_dollars", nation.getTaxes());
 

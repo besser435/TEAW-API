@@ -54,8 +54,7 @@ public class PlayerTracker implements Listener {
 
     /**
      Returns the AFK duration for a player in milliseconds if they are AFK.
-     If the player has moved within the AFK threshold, this method returns 0.
-     Otherwise, it returns the number of seconds since the player's last movement.
+     If the player has moved within the configured AFK threshold, this method returns 0.
 
      @return The AFK time in seconds. Returns 0 if the player is not AFK.
      */
@@ -99,11 +98,6 @@ public class PlayerTracker implements Listener {
             BigDecimal bd = new BigDecimal(balance).setScale(2, RoundingMode.HALF_UP);
             playerData.addProperty("balance", bd.doubleValue());
 
-            // Future offline player endpoint field
-            //User user = essentials.getUser(player.getUniqueId());
-            //long lastOnline = user.getLastLogout();
-            //playerData.addProperty("last_online", lastOnline);
-
             addTownyData(player, playerData);
 
             playersObject.add(player.getUniqueId().toString(), playerData);
@@ -119,25 +113,34 @@ public class PlayerTracker implements Listener {
         // TODO: clean this, there are too many conditionals. See how its done in TownyTracker.java
         if (resident != null) {
             Town town = resident.getTownOrNull();
+
+            String title = resident.getTitle();
+            playerData.addProperty("title", Objects.requireNonNullElse(title, ""));
             if (town != null) {
-                playerData.addProperty("town", town.getName());
+                //playerData.addProperty("town", town.getUUID().toString());
+                playerData.addProperty("town_name", town.getName());
 
                 Nation nation = town.getNationOrNull();
-                String title = resident.getTitle();
+
                 if (nation != null) {
-                    playerData.addProperty("nation", nation.getName());
+                    //playerData.addProperty("nation", nation.getUUID().toString());
+                    playerData.addProperty("nation_name", nation.getName());
                 } else {
-                    playerData.addProperty("nation", "");
+                    //playerData.addProperty("nation", nation.getUUID().toString());
+                    playerData.addProperty("nation_name", "");
                 }
 
-                playerData.addProperty("title", Objects.requireNonNullElse(title, ""));
             } else {
-                playerData.addProperty("town", "");
-                playerData.addProperty("nation", "");
+                //playerData.addProperty("town", "");
+                //playerData.addProperty("nation", "");
+                playerData.addProperty("town_name", "");
+                playerData.addProperty("nation_name", "");
             }
         } else {
-            playerData.addProperty("town", "");
-            playerData.addProperty("nation", "");
+            //playerData.addProperty("town", "");
+            //playerData.addProperty("nation", "");
+            playerData.addProperty("town_name", "");
+            playerData.addProperty("nation_name", "");
         }
     }
 }
