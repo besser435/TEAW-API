@@ -117,29 +117,29 @@ public class PlayerTracker implements Listener {
             String title = resident.getTitle();
             playerData.addProperty("title", Objects.requireNonNullElse(title, ""));
             if (town != null) {
-                //playerData.addProperty("town", town.getUUID().toString());
+                playerData.addProperty("town", town.getUUID().toString());
                 playerData.addProperty("town_name", town.getName());
 
                 Nation nation = town.getNationOrNull();
 
                 if (nation != null) {
-                    //playerData.addProperty("nation", nation.getUUID().toString());
+                    playerData.addProperty("nation", nation.getUUID().toString());
                     playerData.addProperty("nation_name", nation.getName());
                 } else {
-                    //playerData.addProperty("nation", nation.getUUID().toString());
+                    playerData.addProperty("nation", "");
                     playerData.addProperty("nation_name", "");
                 }
 
             } else {
-                //playerData.addProperty("town", "");
-                //playerData.addProperty("nation", "");
+                playerData.addProperty("town", "");
                 playerData.addProperty("town_name", "");
+                playerData.addProperty("nation", "");
                 playerData.addProperty("nation_name", "");
             }
         } else {
-            //playerData.addProperty("town", "");
-            //playerData.addProperty("nation", "");
+            playerData.addProperty("town", "");
             playerData.addProperty("town_name", "");
+            playerData.addProperty("nation", "");
             playerData.addProperty("nation_name", "");
         }
     }

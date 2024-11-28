@@ -44,7 +44,8 @@ public class TownyTracker {
             townData.put("is_active", isActive);
 
             Nation nation = town.getNationOrNull();
-            townData.put("nation", (nation != null) ? nation.getName() : "");
+            townData.put("nation", (nation != null) ? nation.getUUID() : "");
+            townData.put("nation_name", (nation != null) ? nation.getName() : "");
 
             String founder = town.getFounder();
             townData.put("founder", (founder != null) ? founder : "");
@@ -83,7 +84,8 @@ public class TownyTracker {
             nationData.put("leader", (leader != null) ? leader.getName() : "");
 
             Town capital = nation.getCapital();
-            nationData.put("capitol_town", (capital != null) ? capital.getName() : "");
+            nationData.put("capitol_town", (capital != null) ? capital.getUUID() : "");
+            nationData.put("capitol_town_name", (capital != null) ? capital.getName() : "");
 
             nationData.put("board", nation.getBoard());
             nationData.put("tag", nation.getTag());

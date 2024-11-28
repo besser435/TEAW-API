@@ -9,6 +9,14 @@ Spark isn't updated anymore, transition to something else like Javalin. <br>
 Try to actually be compliant with the [json:api spec](https://jsonapi.org/). <br>
 Store player statistics locally so that offline players can still be queried.
 
+Data is **not** normalized. For example, we have Towny UUIDs and names in several endpoints. 
+In the `online_players` endpoint, we have `town`, `town_name`, `nation`,`nation_name`. And in the towny endpoint, 
+we have a `residents` array with player UUIDs. This is nice as we don't have to query `online_players`, then query `towny`
+to get the name of a Town a player is in. But it is bad, as we repeat a lot of information. 
+
+When it comes to building the database (external project that relies on TAPI), it will be larger than it has to as the data is not normalized. This is bad,
+and should be addressed in the future.
+
 ## Configuration
 TAPI implements a nano sized HTTP server for replying to requests. The only config option is the port at which
 the server lives. The default is `1850`.
@@ -31,12 +39,14 @@ Example response:
   "online_players": {
     "75418e9c-34ef-4926-af64-96d98d10954c": {
       "name": "brandonusa",
-      "online_duration": 245271,
-      "afk_duration": 0,
-      "balance": 9253.25,
+      "online_duration": 910768,
+      "afk_duration": 910768,
+      "balance": 87260.0,
+      "title": "geccar",
+      "town": "1bfd162d-0b88-493f-a9d4-aa00f3401a37",
       "town_name": "TTown",
-      "nation_name": "GexNation",
-      "title": ""
+      "nation": "f6be54ea-c532-485b-b976-e3400c3e2c44",
+      "nation_name": "MyNation"
     }
   }
 }
@@ -50,36 +60,39 @@ Returns a list of towns and nations from the Towny plugin. It includes: `towns`,
 have logged on in the last 14 days.
 
 Example response:
+
 ```json
 {
   "towns": {
-    "8b3863d9-f83f-4e3b-a564-02fc06bdeda8": {
-      "board": "money",
-      "tag": "TT",
+    "1bfd162d-0b88-493f-a9d4-aa00f3401a37": {
+      "resident_tax_percent": 0.0,
       "is_active": true,
-      "claimed_chunks": 5,
+      "nation": "f6be54ea-c532-485b-b976-e3400c3e2c44",
       "mayor": "brandonusa",
-      "balance": 8907,
-      "name": "TTown",
       "founder": "brandonusa",
+      "founded": 1732767406676,
+      "nation_name": "MyNation",
+      "balance": 121052.0,
+      "name": "TTown",
       "residents": [
         "75418e9c-34ef-4926-af64-96d98d10954c"
       ],
-      "nation": "GexNation",
-      "founded": 1725790166670,
-      "resident_tax_percent": 23
+      "claimed_chunks": 3,
+      "tag": "TT",
+      "board": "/town set board [msg]"
     }
   },
   "nations": {
-    "8dd4d2e5-151c-43f5-9335-4db32ae0ec8b": {
+    "f6be54ea-c532-485b-b976-e3400c3e2c44": {
       "leader": "brandonusa",
-      "capitol_town": "TTown",
-      "board": "/nation set board [msg]",
+      "capitol_town": "1bfd162d-0b88-493f-a9d4-aa00f3401a37",
+      "capitol_town_name": "TTown",
+      "balance": 0.0,
+      "town_tax_dollars": 0.0,
+      "name": "MyNation",
+      "founded": 1732831000508,
       "tag": "MN",
-      "balance": 2000,
-      "town_tax_dollars": 23,
-      "founded": 1727145046624,
-      "name": "MyNation"
+      "board": "/nation set board [msg]"
     }
   }
 }
@@ -127,7 +140,7 @@ Example response:
   
 ### `/api/chat_history` GET
 
-Returns a list of the last 200 chat messages. An optional `time` argument can be provided, where only messages after
+Returns a list of the last 100 chat messages. An optional `time` argument can be provided, where only messages after
 the timestamp are provided. The `time` argument is a Unix epoch in milliseconds.
 Ex: `/api/chat_history?time=1700000000`
 The different message types are `chat`, `discord`, `join`, `quit`, `death`, & `advancement`.
