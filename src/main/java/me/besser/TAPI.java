@@ -1,22 +1,27 @@
 package me.besser;
 
-import github.scarsz.discordsrv.DiscordSRV;
+import me.lucko.spark.api.Spark;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.time.Instant;
+
 import static me.besser.DIETLogger.*;
 
 public final class TAPI extends JavaPlugin {
     private static Economy econ = null;
+    private static Spark spark = null;
+
 
     @Override
     public void onEnable() {
-        // TODO: clean up private variables and constructors
         DIETLogger.initialize(this);
+
+        saveDefaultConfig();
 
         boolean isEnabledInConfig = getConfig().getBoolean("tapi.enable", true);
         if (!isEnabledInConfig) {
@@ -31,20 +36,34 @@ public final class TAPI extends JavaPlugin {
             return;
         }
 
-        saveDefaultConfig();
+        // TODO: should also move essentials econ constructor to a thing like this
+        RegisteredServiceProvider<Spark> provider = Bukkit.getServicesManager().getRegistration(Spark.class);
+        if (provider != null) {
+            spark = provider.getProvider();
+        }
 
-
-        // Player info
+        // Create shared tracker objects
+        // TODO: clean up how we pass the plugin instance
         PlayerTracker playerTracker = new PlayerTracker(this);
+        ChatTracker chatTracker = new ChatTracker();
+        TownyTracker townyTracker = new TownyTracker(); // TODO: Should move Essentials constructor to this class
+        PlayerStatTracker playerStatTracker = new PlayerStatTracker();
+        ServerInfoTracker serverInfoTracker = new ServerInfoTracker(this, spark);
+
+        // Register events for trackers
         getServer().getPluginManager().registerEvents(playerTracker, this);
 
-        // Sever info
-        ServerInfoTracker serverInfoTracker = new ServerInfoTracker(this);
+        // Initialize the API server and pass shared objects
+        // TODO: is there a better way to pass objects?
+        EndpointServer endpointServer = new EndpointServer(this, playerTracker, chatTracker, townyTracker, playerStatTracker, serverInfoTracker);
 
-        // API server
-        new EndpointServer(this, playerTracker);
 
         log(INFO, ChatColor.AQUA + "TEAW API " + ChatColor.GOLD + "v" + getDescription().getVersion() + ChatColor.RESET + " started!");
+
+        // TODO: does the method in the tracker class need the synchronized keyword?
+        chatTracker.addMessage(new ChatTracker.chatMessage(
+                "SERVER", "TEAW started!", Instant.now().toEpochMilli(), ChatTracker.msgType.status)
+        );
     }
 
     private boolean setupEconomy() {
@@ -67,5 +86,8 @@ public final class TAPI extends JavaPlugin {
     @Override
     public void onDisable() {
         log(INFO, ChatColor.AQUA + "TEAW API " + ChatColor.GOLD + "v" + getDescription().getVersion() + ChatColor.RESET + " stopped!");
+
+        // No chatTracker shutdown message, as that message would be lost on the restart,
+        // and is unlikely to be fetched by the API before the server goes down.
     }
 }

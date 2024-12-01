@@ -16,22 +16,24 @@ import java.util.UUID;
 import static me.besser.DIETLogger.*;
 
 public class EndpointServer {
-    // TODO: clean up private variables and constructors.
     private final JavaPlugin plugin;
     private final PlayerTracker playerTracker;
+    private final ChatTracker chatTracker;
     private final TownyTracker townyTracker;
+    private final PlayerStatTracker playerStatTracker;
     private final ServerInfoTracker serverInfoTracker;
-    private final ChatTracker chatTracker = new ChatTracker();
-    private final PlayerStatTracker playerStatTracker = new PlayerStatTracker();
-
     private final Gson gson = new Gson();
 
-    public EndpointServer(JavaPlugin plugin, PlayerTracker playerTracker) {
-        // TODO: Why the hell are these created here and not in the main class
+    public EndpointServer(  // TODO: is there a better way to pass objects?
+            JavaPlugin plugin, PlayerTracker playerTracker, ChatTracker chatTracker,
+            TownyTracker townyTracker, PlayerStatTracker playerStatTracker, ServerInfoTracker serverInfoTracker
+    ){
         this.plugin = plugin;
         this.playerTracker = playerTracker;
-        this.townyTracker = new TownyTracker();
-        this.serverInfoTracker = new ServerInfoTracker((TAPI) plugin);
+        this.chatTracker = chatTracker;
+        this.townyTracker = townyTracker;
+        this.playerStatTracker = playerStatTracker;
+        this.serverInfoTracker = serverInfoTracker;
 
         DiscordSRV.api.subscribe(chatTracker);
 
@@ -65,7 +67,6 @@ public class EndpointServer {
 
         get("/api/full_player_stats/:uuid", (request, response) -> {
             // Requires the player to be online
-            // TODO: make it so the UUID param is like the time param in chat, and is not just "/uuid"
 
             String uuidParam = request.params("uuid");
             response.type("application/json");
@@ -82,7 +83,7 @@ public class EndpointServer {
         get("/api/chat_history", (request, response) -> {
             response.type("application/json");
 
-            String timeParam = request.queryParams("time");
+            String timeParam = request.queryParams("time"); // Using query param as it's optional
 
             // Get the messages, or if provided, only the ones after a certain timestamp
             long timeFilter = 0;

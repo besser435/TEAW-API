@@ -27,6 +27,7 @@ public class PlayerTracker implements Listener {
     private final Map<Player, Long> joinTime = new HashMap<>();
     private final int AFK_THRESHOLD;
 
+
     public PlayerTracker(TAPI plugin) {
         this.AFK_THRESHOLD = plugin.getConfig().getInt("tapi.afk_timeout", 180) * 1000;
     }

@@ -22,7 +22,7 @@ public class TownyTracker {
     private final Essentials essentials;
 
     public TownyTracker() {
-        Plugin essentials = Bukkit.getServer().getPluginManager().getPlugin("Essentials");
+        Plugin essentials = Bukkit.getServer().getPluginManager().getPlugin("Essentials"); // TODO: Should move to main class
         if (essentials instanceof Essentials) {
             this.essentials = (Essentials) essentials;
         } else {

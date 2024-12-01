@@ -22,7 +22,7 @@ import java.time.Instant;
 public class ChatTracker implements Listener {
     private final List<chatMessage> messageHistory = new LinkedList<>();
 
-    private static final int MAX_MESSAGES = 200;
+    private static final int MAX_MESSAGES = 100;
 
     public ChatTracker() {
         Bukkit.getPluginManager().registerEvents(this, Bukkit.getPluginManager().getPlugin("TAPI"));
@@ -108,7 +108,7 @@ public class ChatTracker implements Listener {
         ));
     }
 
-    private void addMessage(chatMessage message) {
+    public void addMessage(chatMessage message) {
         if (messageHistory.size() >= MAX_MESSAGES) {
             messageHistory.remove(0);
         }
@@ -123,7 +123,8 @@ public class ChatTracker implements Listener {
         join,
         quit,
         advancement,
-        death
+        death,
+        status
     }
 }
 
