@@ -1,7 +1,5 @@
 package me.besser;
 
-import me.lucko.spark.api.Spark;
-import me.lucko.spark.api.gc.GarbageCollector;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -14,11 +12,9 @@ import static me.besser.DIETLogger.*;
 
 public class ServerInfoTracker {
     private final TAPI plugin;
-    private final Spark spark;
 
-    public ServerInfoTracker(TAPI plugin, Spark spark) {
+    public ServerInfoTracker(TAPI plugin) {
         this.plugin = plugin;
-        this.spark = spark;
     }
 
 
@@ -35,18 +31,6 @@ public class ServerInfoTracker {
         serverInfo.put("tapi_version", getTAPIVersionAndBuildTime());
         serverInfo.put("server_version", Bukkit.getVersion());
         serverInfo.put("system_time", Instant.now().toEpochMilli());
-        serverInfo.put("tps", spark.tps());
-        serverInfo.put("mspt", spark.mspt());
-
-
-        Map<String, GarbageCollector> gc = spark.gc();
-        double gcTime = 0;
-        for (GarbageCollector collector : gc.values()) {
-            String gcName = collector.name();
-            long gcFrequency = collector.avgFrequency();
-            gcTime = collector.avgTime();
-        }
-        serverInfo.put("gc_time", gcTime);
 
         return serverInfo;
     }

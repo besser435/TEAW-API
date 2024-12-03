@@ -1,6 +1,5 @@
 package me.besser;
 
-import me.lucko.spark.api.Spark;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,7 +13,6 @@ import static me.besser.DIETLogger.*;
 
 public final class TAPI extends JavaPlugin {
     private static Economy econ = null;
-    private static Spark spark = null;
 
 
     @Override
@@ -37,32 +35,35 @@ public final class TAPI extends JavaPlugin {
         }
 
         // TODO: should also move essentials econ constructor to a thing like this
-        RegisteredServiceProvider<Spark> provider = Bukkit.getServicesManager().getRegistration(Spark.class);
-        if (provider != null) {
-            spark = provider.getProvider();
-        }
+
 
         // Create shared tracker objects
-        // TODO: clean up how we pass the plugin instance
         PlayerTracker playerTracker = new PlayerTracker(this);
         ChatTracker chatTracker = new ChatTracker();
         TownyTracker townyTracker = new TownyTracker(); // TODO: Should move Essentials constructor to this class
         PlayerStatTracker playerStatTracker = new PlayerStatTracker();
-        ServerInfoTracker serverInfoTracker = new ServerInfoTracker(this, spark);
+        ServerInfoTracker serverInfoTracker = new ServerInfoTracker(this);
+
 
         // Register events for trackers
         getServer().getPluginManager().registerEvents(playerTracker, this);
+        getServer().getPluginManager().registerEvents(chatTracker, this);
 
         // Initialize the API server and pass shared objects
-        // TODO: is there a better way to pass objects?
-        EndpointServer endpointServer = new EndpointServer(this, playerTracker, chatTracker, townyTracker, playerStatTracker, serverInfoTracker);
+        EndpointServer endpointServer = new EndpointServer(
+            this,
+            playerTracker,
+            chatTracker,
+            townyTracker,
+            playerStatTracker,
+            serverInfoTracker
+        );
 
 
         log(INFO, ChatColor.AQUA + "TEAW API " + ChatColor.GOLD + "v" + getDescription().getVersion() + ChatColor.RESET + " started!");
 
-        // TODO: does the method in the tracker class need the synchronized keyword?
         chatTracker.addMessage(new ChatTracker.chatMessage(
-                "SERVER", "TEAW started!", Instant.now().toEpochMilli(), ChatTracker.msgType.status)
+            "SERVER", "TEAW started!", Instant.now().toEpochMilli(), ChatTracker.msgType.status)
         );
     }
 

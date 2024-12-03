@@ -1,6 +1,5 @@
 package me.besser;
 
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -24,9 +23,6 @@ public class ChatTracker implements Listener {
 
     private static final int MAX_MESSAGES = 100;
 
-    public ChatTracker() {
-        Bukkit.getPluginManager().registerEvents(this, Bukkit.getPluginManager().getPlugin("TAPI"));
-    }
 
     public synchronized List<chatMessage> getLastMessages() {
         return new LinkedList<>(messageHistory); // Return a copy to prevent modification
@@ -86,7 +82,7 @@ public class ChatTracker implements Listener {
     public synchronized void onPlayerAdvancement(PlayerAdvancementDoneEvent event) {
         if (event.getAdvancement().getDisplay() != null) {
             String advancementName = event.getAdvancement().getDisplay().getTitle();
-            //String advancementDescription = event.getAdvancement().getDisplay().getDescription();     // disabled due to it showing control codes
+            //String advancementDescription = event.getAdvancement().getDisplay().getDescription();     // Disabled due to it showing control codes
             String message = event.getPlayer().getName() + " has completed the advancement [" + advancementName + "]"; // (" + advancementDescription + ")";
 
             addMessage(new chatMessage(
@@ -108,7 +104,7 @@ public class ChatTracker implements Listener {
         ));
     }
 
-    public void addMessage(chatMessage message) {
+    public synchronized void addMessage(chatMessage message) {
         if (messageHistory.size() >= MAX_MESSAGES) {
             messageHistory.remove(0);
         }

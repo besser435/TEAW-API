@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 public class DIETLogger {
     private static Logger logger;
 
-    public static void initialize(Plugin plugin) {
+    public static void initialize(TAPI plugin) {
         logger = plugin.getLogger();
     }
 
