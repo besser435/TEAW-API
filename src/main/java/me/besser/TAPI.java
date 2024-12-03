@@ -1,7 +1,8 @@
 package me.besser;
 
-import org.bukkit.Bukkit;
+import com.earth2me.essentials.Essentials;
 import org.bukkit.ChatColor;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import net.milkbowl.vault.economy.Economy;
@@ -13,6 +14,7 @@ import static me.besser.DIETLogger.*;
 
 public final class TAPI extends JavaPlugin {
     private static Economy econ = null;
+    private static Essentials essentials = null;
 
 
     @Override
@@ -23,27 +25,24 @@ public final class TAPI extends JavaPlugin {
 
         boolean isEnabledInConfig = getConfig().getBoolean("tapi.enable", true);
         if (!isEnabledInConfig) {
-            log(WARNING, "TAPI is disabled in config.yml and will not start");
+            log(WARNING, "TAPI is disabled in config.yml and will not start.");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
-        // TODO: clean up checks or required plugins. we only have like 2, even though we rely on several plugins.
-        if (!setupEconomy()) {
-            log(SEVERE, "Vault is not found! This may cause bugs when responding to API requests");
+        if (!setupEconomy() || !setupEssentials()) {    // TODO: add other dependencies
+            log(SEVERE, "Required dependencies are missing. TAPI will not start.");
+            getServer().getPluginManager().disablePlugin(this);
             return;
         }
-
-        // TODO: should also move essentials econ constructor to a thing like this
 
 
         // Create shared tracker objects
         PlayerTracker playerTracker = new PlayerTracker(this);
         ChatTracker chatTracker = new ChatTracker();
-        TownyTracker townyTracker = new TownyTracker(); // TODO: Should move Essentials constructor to this class
+        TownyTracker townyTracker = new TownyTracker(getEssentials());
         PlayerStatTracker playerStatTracker = new PlayerStatTracker();
         ServerInfoTracker serverInfoTracker = new ServerInfoTracker(this);
-
 
         // Register events for trackers
         getServer().getPluginManager().registerEvents(playerTracker, this);
@@ -67,22 +66,44 @@ public final class TAPI extends JavaPlugin {
         );
     }
 
+
     private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+        Plugin vaultPlugin = getServer().getPluginManager().getPlugin("Vault");
+        if (vaultPlugin == null) {
+            log(SEVERE, "Vault plugin not found!");
             return false;
         }
 
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
+            log(SEVERE, "Vault does not have a valid economy provider!");
             return false;
         }
+
         econ = rsp.getProvider();
         return true;
     }
 
+    private boolean setupEssentials() {
+        Plugin essentialsPlugin = getServer().getPluginManager().getPlugin("Essentials");
+        if (essentialsPlugin instanceof Essentials) {
+            essentials = (Essentials) essentialsPlugin;
+            return true;
+        } else {
+            log(SEVERE, "Essentials plugin not found!");
+            return false;
+        }
+    }
+
+
     public static Economy getEconomy() {
         return econ;
     }
+
+    public static Essentials getEssentials() {
+        return essentials;
+    }
+
 
     @Override
     public void onDisable() {

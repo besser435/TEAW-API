@@ -23,7 +23,6 @@ public class ChatTracker implements Listener {
 
     private static final int MAX_MESSAGES = 100;
 
-
     public synchronized List<chatMessage> getLastMessages() {
         return new LinkedList<>(messageHistory); // Return a copy to prevent modification
     }

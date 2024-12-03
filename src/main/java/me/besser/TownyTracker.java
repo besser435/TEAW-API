@@ -6,9 +6,6 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.plugin.Plugin;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,13 +18,11 @@ public class TownyTracker {
     private static final long FOURTEEN_DAYS_MILLIS = 1000L * 60 * 60 * 24 * 14;
     private final Essentials essentials;
 
-    public TownyTracker() {
-        Plugin essentials = Bukkit.getServer().getPluginManager().getPlugin("Essentials"); // TODO: Should move to main class
-        if (essentials instanceof Essentials) {
-            this.essentials = (Essentials) essentials;
-        } else {
-            throw new IllegalStateException("Essentials plugin not found!");
+    public TownyTracker(Essentials essentials) {
+        if (essentials == null) {
+            throw new IllegalArgumentException("Essentials instance cannot be null.");
         }
+        this.essentials = essentials;
     }
 
     public Map<UUID, Map<String, Object>> getTownData() {
