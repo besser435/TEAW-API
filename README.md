@@ -39,13 +39,13 @@ Example response:
   "online_players": {
     "75418e9c-34ef-4926-af64-96d98d10954c": {
       "name": "brandonusa",
-      "online_duration": 910768,
-      "afk_duration": 910768,
-      "balance": 87260.0,
+      "online_duration": 5424,
+      "afk_duration": 0,
+      "balance": 27260.0,
       "title": "geccar",
       "town": "1bfd162d-0b88-493f-a9d4-aa00f3401a37",
       "town_name": "TTown",
-      "nation": "f6be54ea-c532-485b-b976-e3400c3e2c44",
+      "nation": "213a493f-02f4-499d-999f-4d371f839bb3",
       "nation_name": "MyNation"
     }
   }
@@ -67,12 +67,12 @@ Example response:
     "1bfd162d-0b88-493f-a9d4-aa00f3401a37": {
       "resident_tax_percent": 0.0,
       "is_active": true,
-      "nation": "f6be54ea-c532-485b-b976-e3400c3e2c44",
+      "nation": "213a493f-02f4-499d-999f-4d371f839bb3",
       "mayor": "brandonusa",
       "founder": "brandonusa",
       "founded": 1732767406676,
       "nation_name": "MyNation",
-      "balance": 121052.0,
+      "balance": 119002.0,
       "name": "TTown",
       "residents": [
         "75418e9c-34ef-4926-af64-96d98d10954c"
@@ -83,14 +83,14 @@ Example response:
     }
   },
   "nations": {
-    "f6be54ea-c532-485b-b976-e3400c3e2c44": {
+    "213a493f-02f4-499d-999f-4d371f839bb3": {
       "leader": "brandonusa",
       "capitol_town": "1bfd162d-0b88-493f-a9d4-aa00f3401a37",
-      "capitol_town_name": "TTown",
-      "balance": 0.0,
+      "balance": 60000.0,
       "town_tax_dollars": 0.0,
       "name": "MyNation",
-      "founded": 1732831000508,
+      "founded": 1733267199029,
+      "capitol_town_name": "TTown",
       "tag": "MN",
       "board": "/nation set board [msg]"
     }
@@ -143,9 +143,15 @@ Example response:
 Returns a list of the last 100 chat messages. An optional `time` argument can be provided, where only messages after
 the timestamp are provided. The `time` argument is a Unix epoch in milliseconds.
 Ex: `/api/chat_history?time=1700000000`
-The different message types are `chat`, `discord`, `join`, `quit`, `death`, & `advancement`.
+The different message types are `chat`, `discord`, `join`, `quit`, `death`, `status` & `advancement`.
 ```json
 [
+  {
+    "sender": "SERVER",
+    "message": "TEAW started!",
+    "timestamp": 1732104614300,
+    "type": "status"
+  },
   {
     "sender": "SERVER",
     "message": "brandonusa joined the game",
@@ -184,12 +190,13 @@ The different message types are `chat`, `discord`, `join`, `quit`, `death`, & `a
 Returns some info about the server and world.
 ```json
 {
-  "tapi_version": "TAPI v1.3.0, Build 2024-11-20T12:10:35Z",
-  "world_time_24h": "18:18",
-  "system_time": 1732104992823,
+  "tapi_version": "TAPI v1.3.3, Build 2024-12-03T23:01:57Z",
+  "system_time": 1733267314771,
+  "world_time_24h": "06:10",
   "weather": "Clear",
-  "world_time_ticks": 12309,
-  "server_version": "arclight-1.20.1-1.0.5-1a8925b (MC: 1.20.1)"
+  "world_time_ticks": 180,
+  "server_version": "arclight-1.20.1-1.0.5-1a8925b (MC: 1.20.1)",
+  "day": 756
 }
 
 ```
