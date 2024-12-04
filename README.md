@@ -18,8 +18,11 @@ When it comes to building the database (external project that relies on TAPI), i
 and should be addressed in the future.
 
 ## Configuration
-TAPI implements a nano sized HTTP server for replying to requests. The only config option is the port at which
-the server lives. The default is `1850`.
+In the `config.yml` file, there are a few options. `port`, `enable`, & `afk_timeout`.
+
+TAPI implements a nano sized HTTP server for replying to requests, and as such
+needs to live on a port. The default port for the server is 1850.
+
 
 ## Endpoints
   Most endpoint fields are self-explanatory. Where they are not, there will be a note.
@@ -200,6 +203,11 @@ Returns some info about the server and world.
 }
 
 ```
+
+### API Errors
+Any error in the response will be returned as a JSON object along with its HTTP status.
+
+Example: `{"error": "Not found"}` for a 404, or `{"error": "UUID malformed"}` for a 400.
 
 ## Building
 The plugin is built with Maven, and is edited with IntelliJ IDEA. It is free for students.

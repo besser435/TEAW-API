@@ -69,13 +69,19 @@ public class EndpointServer {
             String uuidParam = request.params("uuid");
             response.type("application/json");
 
-            Player player = Bukkit.getPlayer(UUID.fromString(uuidParam));
-            if (player == null) {
-                response.status(404);
-                return gson.toJson("Player not found or may be offline.");
-            }
+            try {
+                Player player = Bukkit.getPlayer(UUID.fromString(uuidParam));
 
-            return gson.toJson(playerStatTracker.getPlayerStatistics(player));
+                if (player == null || !player.isOnline()) {
+                    response.status(404);
+                    return gson.toJson(Map.of("error", "Player not found or offline"));
+                }
+
+                return gson.toJson(playerStatTracker.getPlayerStatistics(player));
+
+            } catch (IllegalArgumentException e) {
+                return gson.toJson(Map.of("error", "UUID malformed"));
+            }
         });
 
         get("/api/chat_history", (request, response) -> {
@@ -90,7 +96,7 @@ public class EndpointServer {
                     timeFilter = Long.parseLong(timeParam);
                 } catch (NumberFormatException e) {
                     response.status(400);
-                    return gson.toJson("Invalid time format. Expected a Unix epoch in milliseconds.");
+                    return gson.toJson(Map.of("error", "Invalid time format, expected Unix epoch in milliseconds"));
                 }
             }
 
@@ -110,13 +116,13 @@ public class EndpointServer {
         notFound((req, res) -> {
             res.type("application/json");
             res.status(404);
-            return "{\"error\": \"Resource not found\"}";
+            return gson.toJson(Map.of("error", "Not found"));
         });
 
         internalServerError((req, res) -> {
             res.type("application/json");
             res.status(500);
-            return "{\"error\": \"Internal server error\"}";
+            return gson.toJson(Map.of("error", "Internal server error"));
         });
 
         // BUG, when the player is offline this takes ~8s to respond, and returns all data, not just the general stats. this wasn't the case before...
