@@ -52,6 +52,7 @@ public class TownyTracker {
 
             townData.put("board", town.getBoard());
             townData.put("tag", town.getTag());
+            townData.put("color_hex", town.getMapColorHexCode());
 
             BigDecimal balance = BigDecimal.valueOf(town.getAccount().getHoldingBalance());
             townData.put("balance", balance.setScale(2, RoundingMode.HALF_UP));
@@ -89,6 +90,7 @@ public class TownyTracker {
 
             nationData.put("board", nation.getBoard());
             nationData.put("tag", nation.getTag());
+            nationData.put("color_hex", nation.getMapColorHexCode());
 
             BigDecimal balance = BigDecimal.valueOf(nation.getAccount().getHoldingBalance());
             nationData.put("balance", balance.setScale(2, RoundingMode.HALF_UP));
