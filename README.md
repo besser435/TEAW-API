@@ -18,7 +18,7 @@ When it comes to building the database (external project that relies on TAPI), i
 and should be addressed in the future.
 
 ## Configuration
-In the `config.yml` file, there are a few options. `port`, `enable`, & `afk_timeout`.
+In the `config.yml` file, there are a few options. `enable`, `port`, `discord_channel_id`, & `afk_timeout`.
 
 TAPI implements a nano sized HTTP server for replying to requests, and as such
 needs to live on a port. The default port for the server is 1850.
@@ -193,10 +193,11 @@ The different message types are `chat`, `discord`, `join`, `quit`, `death`, `sta
 Returns some info about the server and world.
 ```json
 {
-  "tapi_version": "TAPI v1.3.3, Build 2024-12-03T23:01:57Z",
-  "system_time": 1733267314771,
+  "tapi_version": "1.4.1",
+  "system_time": 1733635909945,
   "world_time_24h": "06:10",
-  "weather": "Clear",
+  "weather": "Thunderstorms",
+  "tapi_build": "2024-12-08T05:29:19Z",
   "world_time_ticks": 180,
   "server_version": "arclight-1.20.1-1.0.5-1a8925b (MC: 1.20.1)",
   "day": 756

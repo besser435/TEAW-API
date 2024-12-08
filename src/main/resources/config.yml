@@ -3,6 +3,8 @@ tapi:
   enable: true
   # How long a player has to not move for in order to be counted as AFK (seconds)
   afk_timeout: 180
+  # The Discord channel ID to listen in for messages to log
+  discord_channel_id: "1201298174736863273"
 
 server:
   # The port where the API endpoints will be accessible

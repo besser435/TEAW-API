@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import static me.besser.DIETLogger.*;
 
@@ -50,8 +52,11 @@ public class TownyTracker {
 
             townData.put("board", town.getBoard());
             townData.put("tag", town.getTag());
-            townData.put("balance", town.getAccount().getHoldingBalance());
-            townData.put("resident_tax_percent", town.getTaxes());
+
+            BigDecimal balance = BigDecimal.valueOf(town.getAccount().getHoldingBalance());
+            townData.put("balance", balance.setScale(2, RoundingMode.HALF_UP));
+
+            townData.put("resident_tax", town.getTaxes());
 
             List<Resident> residents = town.getResidents();
             townData.put("residents", residents.stream().map(Resident::getUUID).toArray(UUID[]::new));
@@ -84,8 +89,11 @@ public class TownyTracker {
 
             nationData.put("board", nation.getBoard());
             nationData.put("tag", nation.getTag());
-            nationData.put("balance", nation.getAccount().getHoldingBalance());
-            nationData.put("town_tax_dollars", nation.getTaxes());
+
+            BigDecimal balance = BigDecimal.valueOf(nation.getAccount().getHoldingBalance());
+            nationData.put("balance", balance.setScale(2, RoundingMode.HALF_UP));
+
+            nationData.put("nation_tax", nation.getTaxes());
 
             nationDataMap.put(nation.getUUID(), nationData);
         }

@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import github.scarsz.discordsrv.api.ListenerPriority;
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessageReceivedEvent;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -20,8 +21,12 @@ import java.time.Instant;
 
 public class ChatTracker implements Listener {
     private final List<chatMessage> messageHistory = new LinkedList<>();
+    private static final int MAX_MESSAGES = 200;
+    private final String DISCORD_CHANNEL_ID;
 
-    private static final int MAX_MESSAGES = 100;
+    public ChatTracker(TAPI plugin) {
+        this.DISCORD_CHANNEL_ID = plugin.getConfig().getString("tapi.discord_channel_id");
+    }
 
     public synchronized List<chatMessage> getLastMessages() {
         return new LinkedList<>(messageHistory); // Return a copy to prevent modification
@@ -95,9 +100,16 @@ public class ChatTracker implements Listener {
 
     @Subscribe(priority = ListenerPriority.NORMAL)
     public void onDiscordMessage(DiscordGuildMessageReceivedEvent event) {
+        TextChannel channel = event.getChannel();
+        String messageDisplay = event.getMessage().getContentDisplay();
+
+        if (!channel.getId().equals(DISCORD_CHANNEL_ID)) return;
+
+        if (messageDisplay.isBlank()) return; // This method would sometimes log empty messages. This *should* fix that.
+
         addMessage(new chatMessage(
             event.getAuthor().getName(),
-            event.getMessage().getContentRaw(),
+            messageDisplay,
             Instant.now().toEpochMilli(),
             msgType.discord
         ));

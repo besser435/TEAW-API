@@ -28,7 +28,8 @@ public class ServerInfoTracker {
         serverInfo.put("world_time_24h", convertTicksTo24HourFormat(world.getTime()));
         serverInfo.put("day", world.getFullTime() / 24000);
 
-        serverInfo.put("tapi_version", getTAPIVersionAndBuildTime());
+        serverInfo.put("tapi_version", plugin.getDescription().getVersion());
+        serverInfo.put("tapi_build", getTAPIBuildTime());
         serverInfo.put("server_version", Bukkit.getVersion());
         serverInfo.put("system_time", Instant.now().toEpochMilli());
 
@@ -48,9 +49,8 @@ public class ServerInfoTracker {
         }
     }
 
-    private String getTAPIVersionAndBuildTime() {
-        String buildTime = "Unknown";
-        String version = plugin.getDescription().getVersion();
+    private String getTAPIBuildTime() {
+        String buildTime = null;
 
         try {
             java.util.Properties properties = new java.util.Properties();
@@ -61,7 +61,7 @@ public class ServerInfoTracker {
             log(WARNING, "Could not load build timestamp");
         }
 
-        return String.format("TAPI v%s, Build %s", version, buildTime); // not really meant to be machine-readable
+        return buildTime;
     }
 
     private String convertTicksTo24HourFormat(long ticks) {

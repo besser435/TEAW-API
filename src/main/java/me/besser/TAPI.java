@@ -39,7 +39,7 @@ public final class TAPI extends JavaPlugin {
 
         // Create shared tracker objects
         PlayerTracker playerTracker = new PlayerTracker(this);
-        ChatTracker chatTracker = new ChatTracker();
+        ChatTracker chatTracker = new ChatTracker(this);
         TownyTracker townyTracker = new TownyTracker(getEssentials());
         PlayerStatTracker playerStatTracker = new PlayerStatTracker();
         ServerInfoTracker serverInfoTracker = new ServerInfoTracker(this);
@@ -62,7 +62,7 @@ public final class TAPI extends JavaPlugin {
         log(INFO, ChatColor.AQUA + "TEAW API " + ChatColor.GOLD + "v" + getDescription().getVersion() + ChatColor.RESET + " started!");
 
         chatTracker.addMessage(new ChatTracker.chatMessage(
-            "SERVER", "TEAW started!", Instant.now().toEpochMilli(), ChatTracker.msgType.status)
+            "SERVER", "TEAW has started!", Instant.now().toEpochMilli(), ChatTracker.msgType.status)
         );
     }
 
