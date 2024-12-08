@@ -74,6 +74,7 @@ Example response:
       "mayor": "brandonusa",
       "founder": "brandonusa",
       "founded": 1732767406676,
+      "color_hex": "000000",
       "nation_name": "MyNation",
       "balance": 119002.0,
       "name": "TTown",
@@ -94,6 +95,7 @@ Example response:
       "name": "MyNation",
       "founded": 1733267199029,
       "capitol_town_name": "TTown",
+      "color_hex": "00ffff",
       "tag": "MN",
       "board": "/nation set board [msg]"
     }
