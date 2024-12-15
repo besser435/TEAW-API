@@ -63,7 +63,6 @@ Returns a list of towns and nations from the Towny plugin. It includes: `towns`,
 have logged on in the last 14 days.
 
 Example response:
-
 ```json
 {
   "towns": {
@@ -149,40 +148,52 @@ Returns a list of the last 100 chat messages. An optional `time` argument can be
 the timestamp are provided. The `time` argument is a Unix epoch in milliseconds.
 Ex: `/api/chat_history?time=1700000000`
 The different message types are `chat`, `discord`, `join`, `quit`, `death`, `status` & `advancement`.
+
+The `sender_uuid` field is not always the sender's UUID. For messages types like a death or advancement which are SERVER
+messages, we instead include the UUID of the player the message is about. For Discord messages, we send the user ID of the 
+message's author. Messages that aren't related to a player (such as a status message) have their UUID empty.
+
+Example response:
 ```json
 [
   {
     "sender": "SERVER",
+    "sender_uuid": "",
     "message": "TEAW started!",
     "timestamp": 1732104614300,
     "type": "status"
   },
   {
     "sender": "SERVER",
+    "sender_uuid": "75418e9c-34ef-4926-af64-96d98d10954c",
     "message": "brandonusa joined the game",
     "timestamp": 1732104771419,
     "type": "join"
   },
   {
     "sender": "SERVER",
+    "sender_uuid": "75418e9c-34ef-4926-af64-96d98d10954c",
     "message": "brandonusa has completed the advancement [A Pair of Giants]",
     "timestamp": 1732104772574,
     "type": "advancement"
   },
   {
     "sender": "brandonusa",
+    "sender_uuid": "75418e9c-34ef-4926-af64-96d98d10954c",
     "message": "no way, a large pair",
     "timestamp": 1732104786820,
     "type": "chat"
   },
   {
     "sender": "besser",
+    "sender_uuid": "232014294303113216",
     "message": "chatting rn",
     "timestamp": 1732104787311,
     "type": "discord"
   },
   {
     "sender": "SERVER",
+    "sender_uuid": "75418e9c-34ef-4926-af64-96d98d10954c",
     "message": "brandonusa left the game",
     "timestamp": 1732104792573,
     "type": "quit"
@@ -193,6 +204,8 @@ The different message types are `chat`, `discord`, `join`, `quit`, `death`, `sta
 ### `/api/server_info` GET
 
 Returns some info about the server and world.
+
+Example response:
 ```json
 {
   "tapi_version": "1.4.1",

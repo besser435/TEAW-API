@@ -62,7 +62,7 @@ public final class TAPI extends JavaPlugin {
         log(INFO, ChatColor.AQUA + "TEAW API " + ChatColor.GOLD + "v" + getDescription().getVersion() + ChatColor.RESET + " started!");
 
         chatTracker.addMessage(new ChatTracker.chatMessage(
-            "SERVER", "TEAW has started!", Instant.now().toEpochMilli(), ChatTracker.msgType.status)
+            "SERVER", "", "TEAW has started!", Instant.now().toEpochMilli(), ChatTracker.msgType.status)
         );
     }
 

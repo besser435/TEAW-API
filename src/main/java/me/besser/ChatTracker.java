@@ -21,11 +21,11 @@ import java.time.Instant;
 
 public class ChatTracker implements Listener {
     private final List<chatMessage> messageHistory = new LinkedList<>();
-    private static final int MAX_MESSAGES = 200;
+    private static final int MAX_MESSAGES = 100;
     private final String DISCORD_CHANNEL_ID;
 
     public ChatTracker(TAPI plugin) {
-        this.DISCORD_CHANNEL_ID = plugin.getConfig().getString("tapi.discord_channel_id");
+        this.DISCORD_CHANNEL_ID = plugin.getConfig().getString("tapi.discord_channel_id", "1201298174736863273");
     }
 
     public synchronized List<chatMessage> getLastMessages() {
@@ -41,6 +41,7 @@ public class ChatTracker implements Listener {
         if (cleanFormat.charAt(1) == 'g') {
             addMessage(new chatMessage(
                 event.getPlayer().getName(),
+                event.getPlayer().getUniqueId().toString(),
                 event.getMessage(),
                 Instant.now().toEpochMilli(),
                 msgType.chat
@@ -54,6 +55,7 @@ public class ChatTracker implements Listener {
 
         addMessage(new chatMessage(
             "SERVER",
+            event.getPlayer().getUniqueId().toString(),
             joinMessage,
             Instant.now().toEpochMilli(),
             msgType.join
@@ -66,6 +68,7 @@ public class ChatTracker implements Listener {
 
         addMessage(new chatMessage(
             "SERVER",
+            event.getPlayer().getUniqueId().toString(),
             quitMessage,
             Instant.now().toEpochMilli(),
             msgType.quit
@@ -76,6 +79,7 @@ public class ChatTracker implements Listener {
     public synchronized void onPlayerDeath(PlayerDeathEvent event) {
         addMessage(new chatMessage(
             "SERVER",
+            event.getEntity().getUniqueId().toString(),
             event.getDeathMessage(),
             Instant.now().toEpochMilli(),
             msgType.death
@@ -91,6 +95,7 @@ public class ChatTracker implements Listener {
 
             addMessage(new chatMessage(
                 "SERVER",
+                event.getPlayer().getUniqueId().toString(),
                 message,
                 Instant.now().toEpochMilli(),
                 msgType.advancement
@@ -109,6 +114,7 @@ public class ChatTracker implements Listener {
 
         addMessage(new chatMessage(
             event.getAuthor().getName(),
+            event.getAuthor().getId(),
             messageDisplay,
             Instant.now().toEpochMilli(),
             msgType.discord
@@ -122,7 +128,7 @@ public class ChatTracker implements Listener {
         messageHistory.add(message);
     }
 
-    public record chatMessage(String sender, String message, long timestamp, msgType type) {}     // ok java has some cool features...
+    public record chatMessage(String sender, String sender_uuid, String message, long timestamp, msgType type) {}
 
     enum msgType {  // Enums should be capitalized, but they should to be lowercase for the JSON so screw it
         chat,

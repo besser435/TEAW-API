@@ -25,8 +25,8 @@ public class EndpointServer {
     private final Gson gson = new Gson();
 
     public EndpointServer(  // TODO: is there a better way to pass objects?
-            JavaPlugin plugin, PlayerTracker playerTracker, ChatTracker chatTracker,
-            TownyTracker townyTracker, PlayerStatTracker playerStatTracker, ServerInfoTracker serverInfoTracker
+        JavaPlugin plugin, PlayerTracker playerTracker, ChatTracker chatTracker,
+        TownyTracker townyTracker, PlayerStatTracker playerStatTracker, ServerInfoTracker serverInfoTracker
     ){
         this.plugin = plugin;
         this.playerTracker = playerTracker;
