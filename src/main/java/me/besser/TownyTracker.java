@@ -54,6 +54,13 @@ public class TownyTracker {
             townData.put("tag", town.getTag());
             townData.put("color_hex", town.getMapColorHexCode());
 
+            // Note that this gets the spawn location, which is in the homeblock chunk.
+            // This does not get the homeblock position, but is inferred given the
+            // spawn must be in a homeblock (in a default Towny config).
+            townData.put("spawn_loc_x", town.getSpawnOrNull().getBlockX());
+            townData.put("spawn_loc_z", town.getSpawnOrNull().getBlockZ());
+            townData.put("spawn_loc_y", town.getSpawnOrNull().getBlockY());
+
             BigDecimal balance = BigDecimal.valueOf(town.getAccount().getHoldingBalance());
             townData.put("balance", balance.setScale(2, RoundingMode.HALF_UP));
 

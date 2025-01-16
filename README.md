@@ -75,6 +75,9 @@ Example response:
       "founded": 1732767406676,
       "color_hex": "000000",
       "nation_name": "MyNation",
+      "spawn_loc_z": 96,
+      "spawn_loc_y": 77,
+      "spawn_loc_x": 18,
       "balance": 119002.0,
       "name": "TTown",
       "residents": [
@@ -208,7 +211,7 @@ Returns some info about the server and world.
 Example response:
 ```json
 {
-  "tapi_version": "1.4.1",
+  "tapi_version": "1.4.3",
   "system_time": 1733635909945,
   "world_time_24h": "06:10",
   "weather": "Thunderstorms",
