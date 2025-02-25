@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ public class ServerInfoTracker {
         serverInfo.put("world_time_ticks", world.getTime());
         serverInfo.put("world_time_24h", convertTicksTo24HourFormat(world.getTime()));
         serverInfo.put("day", world.getFullTime() / 24000);
+        serverInfo.put("loaded_chunks", Arrays.stream(world.getLoadedChunks()).count());
 
         serverInfo.put("tapi_version", plugin.getDescription().getVersion());
         serverInfo.put("tapi_build", getTAPIBuildTime());
