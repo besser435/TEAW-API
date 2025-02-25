@@ -211,14 +211,15 @@ Returns some info about the server and world.
 Example response:
 ```json
 {
-  "tapi_version": "1.4.3",
+  "tapi_version": "1.4.4",
   "system_time": 1733635909945,
   "world_time_24h": "06:10",
   "weather": "Thunderstorms",
   "tapi_build": "2024-12-08T05:29:19Z",
   "world_time_ticks": 180,
   "server_version": "arclight-1.20.1-1.0.5-1a8925b (MC: 1.20.1)",
-  "day": 756
+  "day": 756,
+  "loaded_chunks": 1504
 }
 
 ```
