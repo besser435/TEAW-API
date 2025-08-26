@@ -22,7 +22,7 @@ public class ServerInfoTracker {
     public Map<String, Object> getServerInfo() {
         Map<String, Object> serverInfo = new HashMap<>();
 
-        World world = Bukkit.getWorlds().get(0);    // might cause issues if using BungeeCord. Should use getWorld({world name})
+        World world = Bukkit.getWorlds().get(0);    // might cause issues if using BungeeCord. Should use getWorld({world name set in config})
 
         serverInfo.put("weather", getWorldWeather(world));
         serverInfo.put("world_time_ticks", world.getTime());

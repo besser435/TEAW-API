@@ -1,8 +1,8 @@
 # TEAW API
-TAPI is a super simple plugin that replaces Dynmap's ability to see online players, as Bluemap does not provide this
-when player positions are disabled. It also provides data from Towny and Vault for even more information.
+TAPI is a super simple plugin that provides a web-server which exposes data about the ToEndAllWars Minecraft server. 
+It shows things like online players, Towny info, player statistics, and more.
 
-The Towny and Bukkit APIs are very simple, so this could easily be expanded in the future if Theeno allows for it.
+The Spigot and dependency APIs are very simple, so this can easily be expanded.
 
 ## Programmer Notes & To Do
 Spark isn't updated anymore, transition to something else like Javalin. <br>
@@ -232,5 +232,3 @@ Example: `{"error": "Not found"}` for a 404, or `{"error": "UUID malformed"}` fo
 ## Building
 The plugin is built with Maven, and is edited with IntelliJ IDEA. It is free for students.
 [This video](https://www.youtube.com/watch?v=s1xg9eJeP3E) is helpful for getting started.
-
-And that's it! It's a pretty simple plugin. Theenor please add it, Italy and I need it for our respective websites.
