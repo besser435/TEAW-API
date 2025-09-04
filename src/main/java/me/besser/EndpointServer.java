@@ -42,7 +42,6 @@ public class EndpointServer {
 
     private void initRoutes() {
         // Should maybe add a short TTL cache
-        plugin.saveDefaultConfig();
         FileConfiguration config = plugin.getConfig();
         int serverPort = config.getInt("server.port", 1850);
 

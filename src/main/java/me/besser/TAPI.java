@@ -36,17 +36,12 @@ public final class TAPI extends JavaPlugin {
             return;
         }
 
-
         // Create shared tracker objects
         PlayerTracker playerTracker = new PlayerTracker(this);
         ChatTracker chatTracker = new ChatTracker(this);
         TownyTracker townyTracker = new TownyTracker(getEssentials());
         PlayerStatTracker playerStatTracker = new PlayerStatTracker();
         ServerInfoTracker serverInfoTracker = new ServerInfoTracker(this);
-
-        // Register events for trackers
-        getServer().getPluginManager().registerEvents(playerTracker, this);
-        getServer().getPluginManager().registerEvents(chatTracker, this);
 
         // Initialize the API server and pass shared objects
         EndpointServer endpointServer = new EndpointServer(
@@ -57,7 +52,6 @@ public final class TAPI extends JavaPlugin {
             playerStatTracker,
             serverInfoTracker
         );
-
 
         log(INFO, ChatColor.AQUA + "TEAW API " + ChatColor.GOLD + "v" + getDescription().getVersion() + ChatColor.RESET + " started!");
 

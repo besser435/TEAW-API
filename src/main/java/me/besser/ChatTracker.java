@@ -26,6 +26,7 @@ public class ChatTracker implements Listener {
 
     public ChatTracker(TAPI plugin) {
         this.DISCORD_CHANNEL_ID = plugin.getConfig().getString("tapi.discord_channel_id", "1201298174736863273");
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     public synchronized List<chatMessage> getLastMessages() {

@@ -30,6 +30,7 @@ public class PlayerTracker implements Listener {
 
     public PlayerTracker(TAPI plugin) {
         this.AFK_THRESHOLD = plugin.getConfig().getInt("tapi.afk_timeout", 180) * 1000;
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler
