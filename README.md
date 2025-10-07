@@ -62,6 +62,11 @@ Returns a list of towns and nations from the Towny plugin. It includes: `towns`,
 `is_active` is whether the town is active or not. A town is considered active if 30% or more of its residents
 have logged on in the last 14 days.
 
+
+`spawn_loc_{x || y || z}` is not actually the spawn location. It is the center of the town's home block chunk, and the highest Y block there.
+This is for legacy reasons, as the old way started throwing random null pointer exceptions. `spawn_loc_y` is always 64 (again, legacy reasons).
+
+
 Example response:
 ```json
 {
@@ -76,7 +81,7 @@ Example response:
       "color_hex": "000000",
       "nation_name": "MyNation",
       "spawn_loc_z": 96,
-      "spawn_loc_y": 77,
+      "spawn_loc_y": 64,
       "spawn_loc_x": 18,
       "balance": 119002.0,
       "name": "TTown",

@@ -6,6 +6,11 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
+import com.palmergames.bukkit.towny.object.TownBlock;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 
 import java.util.HashMap;
 import java.util.List;
@@ -54,12 +59,22 @@ public class TownyTracker {
             townData.put("tag", town.getTag());
             townData.put("color_hex", town.getMapColorHexCode());
 
-            // Note that this gets the spawn location, which is in the homeblock chunk.
-            // This does not get the homeblock position, but is inferred given the
-            // spawn must be in a homeblock (in a default Towny config).
-            townData.put("spawn_loc_x", town.getSpawnOrNull().getBlockX());
-            townData.put("spawn_loc_z", town.getSpawnOrNull().getBlockZ());
-            townData.put("spawn_loc_y", town.getSpawnOrNull().getBlockY());
+            // NOTE: it says spawn_loc, but its really just the center of the homeblock. This is for legacy reasons.
+            TownBlock homeBlock = town.getHomeBlockOrNull();
+            int centerX = 0;
+            int centerY = 0;
+            int centerZ = 0;
+            if (homeBlock != null) {
+                centerX = homeBlock.getX() * 16 + 8;
+                centerZ = homeBlock.getZ() * 16 + 8;
+                centerY = 64;
+                // Fixed Y. Looking up the world and the highest Y block took ~200ms, which is too slow
+                // when the plugin runs on the main threads. Was getting "Cant keep up!" messages.
+            }
+            // Even if null, put that in so the DB updater can store something.
+            townData.put("spawn_loc_x", centerX);
+            townData.put("spawn_loc_y", centerY);
+            townData.put("spawn_loc_z", centerZ);
 
             BigDecimal balance = BigDecimal.valueOf(town.getAccount().getHoldingBalance());
             townData.put("balance", balance.setScale(2, RoundingMode.HALF_UP));
