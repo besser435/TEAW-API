@@ -15,12 +15,12 @@ import static me.besser.DIETLogger.*;
 public final class TAPI extends JavaPlugin {
     private static Economy econ = null;
     private static Essentials essentials = null;
+    private EndpointServer endpointServer;
 
 
     @Override
     public void onEnable() {
         DIETLogger.initialize(this);
-
         saveDefaultConfig();
 
         boolean isEnabledInConfig = getConfig().getBoolean("tapi.enable", true);
@@ -42,15 +42,17 @@ public final class TAPI extends JavaPlugin {
         TownyTracker townyTracker = new TownyTracker(getEssentials());
         PlayerStatTracker playerStatTracker = new PlayerStatTracker();
         ServerInfoTracker serverInfoTracker = new ServerInfoTracker(this);
+        PVPTracker PVPTracker = new PVPTracker(this);
 
-        // Initialize the API server and pass shared objects
-        EndpointServer endpointServer = new EndpointServer(
+        // Start server
+        this.endpointServer = new EndpointServer(
             this,
             playerTracker,
             chatTracker,
             townyTracker,
             playerStatTracker,
-            serverInfoTracker
+            serverInfoTracker,
+            PVPTracker
         );
 
         log(INFO, ChatColor.AQUA + "TEAW API " + ChatColor.GOLD + "v" + getDescription().getVersion() + ChatColor.RESET + " started!");
@@ -101,6 +103,10 @@ public final class TAPI extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (endpointServer != null) {
+            endpointServer.stop();
+        }
+
         log(INFO, ChatColor.AQUA + "TEAW API " + ChatColor.GOLD + "v" + getDescription().getVersion() + ChatColor.RESET + " stopped!");
 
         // No chatTracker shutdown message, as that message would be lost on the restart,

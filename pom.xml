@@ -6,7 +6,7 @@
 
     <groupId>me.besser</groupId>
     <artifactId>TAPI</artifactId>
-    <version>1.4.5</version>
+    <version>1.5.0</version>
     <packaging>jar</packaging>
 
     <name>TAPI</name>
@@ -111,12 +111,6 @@
             <version>1.20.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.9</version>    <!-- for some reason any newer version throws linting errors -->
-        </dependency>
         <!-- https://github.com/TownyAdvanced/Towny/wiki/TownyAPI#getting-started-with-towny-and-your-ide -->
         <dependency>
             <groupId>com.palmergames.bukkit.towny</groupId>
@@ -124,11 +118,17 @@
             <version>0.100.3.0</version>
             <scope>provided</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.sparkjava/spark-core -->
+        <!-- https://mvnrepository.com/artifact/io.javalin/javalin -->
         <dependency>
-            <groupId>com.sparkjava</groupId>
-            <artifactId>spark-core</artifactId>
-            <version>2.9.4</version>
+            <groupId>io.javalin</groupId>
+            <artifactId>javalin</artifactId>
+            <version>6.7.0</version>
+        </dependency>
+        <!-- https://github.com/FasterXML/jackson -->
+        <dependency>    <!-- Javalin needs a JSON thing -->
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.17.2</version>
         </dependency>
         <dependency>
             <groupId>com.github.MilkBowl</groupId>

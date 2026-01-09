@@ -1,9 +1,7 @@
 package me.besser;
 
-import static spark.Spark.*;
-import com.google.gson.Gson;
-
 import github.scarsz.discordsrv.DiscordSRV;
+import io.javalin.Javalin;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -22,11 +20,14 @@ public class EndpointServer {
     private final TownyTracker townyTracker;
     private final PlayerStatTracker playerStatTracker;
     private final ServerInfoTracker serverInfoTracker;
-    private final Gson gson = new Gson();
+    private final PVPTracker PVPTracker;
 
-    public EndpointServer(  // TODO: is there a better way to pass objects?
+    private Javalin app;
+
+    public EndpointServer(
         JavaPlugin plugin, PlayerTracker playerTracker, ChatTracker chatTracker,
-        TownyTracker townyTracker, PlayerStatTracker playerStatTracker, ServerInfoTracker serverInfoTracker
+        TownyTracker townyTracker, PlayerStatTracker playerStatTracker,
+        ServerInfoTracker serverInfoTracker, PVPTracker PVPTracker
     ){
         this.plugin = plugin;
         this.playerTracker = playerTracker;
@@ -34,6 +35,7 @@ public class EndpointServer {
         this.townyTracker = townyTracker;
         this.playerStatTracker = playerStatTracker;
         this.serverInfoTracker = serverInfoTracker;
+        this.PVPTracker = PVPTracker;
 
         DiscordSRV.api.subscribe(chatTracker);
 
@@ -41,101 +43,95 @@ public class EndpointServer {
     }
 
     private void initRoutes() {
-        // Should maybe add a short TTL cache
+        // Should maybe add a short TTL cache in the event this becomes more widely used than for just one fetcher.
         FileConfiguration config = plugin.getConfig();
         int serverPort = config.getInt("server.port", 1850);
 
-        port(serverPort);  // TODO: Spark is deprecated. Transition to Javalin
-
-
-        get("/api/online_players", (request, response) -> {
-            response.type("application/json");
-
-            return gson.toJson(playerTracker.getOnlinePlayersInfo());
+        app = Javalin.create(javalinConfig -> {
+            javalinConfig.http.defaultContentType = "application/json";
+            javalinConfig.showJavalinBanner = false;
         });
 
-        get("/api/towny", (request, response) -> {
-            response.type("application/json");
+        // Endpoints
+        app.get("/api/online_players", ctx -> {
+            ctx.json(playerTracker.getOnlinePlayersInfo());
+        });
 
+        app.get("/api/towny", ctx -> {
             Map<String, Object> townyData = new HashMap<>();
             townyData.put("towns", townyTracker.getTownData());
             townyData.put("nations", townyTracker.getNationData());
 
-            return gson.toJson(townyData);
+            ctx.json(townyData);
         });
 
-        get("/api/full_player_stats/:uuid", (request, response) -> {    // Requires the player to be online
-            String uuidParam = request.params("uuid");
-            response.type("application/json");
+        app.get("/api/full_player_stats/{uuid}", ctx -> {
+            String uuidParam = ctx.pathParam("uuid");
 
             try {
-                Player player = Bukkit.getPlayer(UUID.fromString(uuidParam));
+                UUID uuid = UUID.fromString(uuidParam);
+                Player player = Bukkit.getPlayer(uuid);
 
                 if (player == null || !player.isOnline()) {
-                    response.status(404);
-                    return gson.toJson(Map.of("error", "Player not found or offline"));
+                    ctx.status(404).json(Map.of(
+                            "error", "Player not found or offline"
+                    ));
+                    return;
                 }
 
-                return gson.toJson(playerStatTracker.getPlayerStatistics(player));
+                ctx.json(playerStatTracker.getPlayerStatistics(player));
 
             } catch (IllegalArgumentException e) {
-                return gson.toJson(Map.of("error", "UUID malformed"));
+                ctx.status(400).json(Map.of(
+                        "error", "UUID malformed"
+                ));
             }
         });
 
-        get("/api/chat_history", (request, response) -> {
-            response.type("application/json");
+        app.get("/api/chat_history", ctx -> {
+            long timeFilter = ctx.queryParamAsClass("time", Long.class) // Optional
+                    .getOrDefault(0L);
 
-            String timeParam = request.queryParams("time"); // Using query param as it's optional
-
-            // Get the messages, or if provided, only the ones after a certain timestamp
-            long timeFilter = 0;
-            if (timeParam != null) {
-                try {
-                    timeFilter = Long.parseLong(timeParam);
-                } catch (NumberFormatException e) {
-                    response.status(400);
-                    return gson.toJson(Map.of("error", "Invalid time format, expected Unix epoch in milliseconds"));
-                }
-            }
-
-            long finalTimeFilter = timeFilter;
-            return gson.toJson(chatTracker.getLastMessages().stream()
-                    .filter(message -> message.timestamp() > finalTimeFilter)
-                    .toList());
+            ctx.json(
+                    chatTracker.getLastMessages().stream()
+                            .filter(message -> message.timestamp() > timeFilter)
+                            .toList()
+            );
         });
 
-        get("/api/server_info", (request, response) -> {
-            response.type("application/json");
-
-            Map<String, Object> serverInfo = serverInfoTracker.getServerInfo();
-            return gson.toJson(serverInfo);
+        app.get("/api/server_info", ctx -> {
+            ctx.json(serverInfoTracker.getServerInfo());
         });
 
-        notFound((req, res) -> {
-            res.type("application/json");
-            res.status(404);
-            return gson.toJson(Map.of("error", "Not found"));
+        app.get("/api/kill_history", ctx -> {
+            long timeFilter = ctx.queryParamAsClass("time", Long.class) // Optional
+                    .getOrDefault(0L);
+
+            ctx.json(
+                    PVPTracker.getLastKills().stream()
+                            .filter(kill -> kill.timestamp() > timeFilter)
+                            .toList()
+            );
         });
 
-        internalServerError((req, res) -> {
-            res.type("application/json");
-            res.status(500);
-            return gson.toJson(Map.of("error", "Internal server error"));
+        // Errors
+        app.error(404, ctx -> {
+            ctx.json(Map.of("error", "Not found"));
         });
 
-        // BUG, when the player is offline this takes ~8s to respond, and returns all data, not just the general stats. this wasn't the case before...
-//        get("/api/offline_player_stats/:uuid", (req, res) -> {
-//            String uuid = req.params("uuid");
-//            res.type("application/json");
-//
-//            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
-//            if (player == null) {
-//                res.status(404);
-//                return gson.toJson("Player not found");
-//            }
-//
-//            return gson.toJson(playerStatTracker.getPlayerStatistics(player));
-//        });
+        app.exception(Exception.class, (e, ctx) -> {
+            ctx.status(500).json(Map.of(
+                    "error", "Internal server error"
+            ));
+        });
+
+        app.start(serverPort);
+    }
+
+    public void stop() {
+        if (app != null) {
+            app.stop();
+            log(INFO, "Javalin server stopped");
+        }
     }
 }

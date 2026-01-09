@@ -229,6 +229,44 @@ Example response:
 
 ```
 
+### `/api/kill_history` GET
+Returns info about PvP kills.
+
+Returns a list of the last 50 Player vs. Player kills. An optional `time` argument can be provided, where only kills after
+the timestamp are provided. The `time` argument is a Unix epoch in milliseconds.
+Ex: `/api/kill_history?time=1756962020017`
+
+Example response:
+```json
+[
+  {
+    "killer_uuid": "75418e9c-34ef-4926-af64-96d98d10954c",
+    "killer_name": "bessyusa",
+    "victim_uuid": "75418e9c-34ef-4926-af64-96d98d10954c",
+    "victim_name": "bessyusa",
+    "death_message": "bessyusa was killed by magic while trying to escape bessyusa",
+    "weapon": {
+      "type": "bow",
+      "enchantments": [
+        {
+          "id": "infinity",
+          "level": 1
+        },
+        {
+          "id": "power",
+          "level": 5
+        },
+        {
+          "id": "flame",
+          "level": 1
+        }
+      ]
+    },
+    "timestamp": 1756962038085
+  }
+]
+```
+
 ### API Errors
 Any error in the response will be returned as a JSON object along with its HTTP status.
 

@@ -1,6 +1,5 @@
 package me.besser;
 
-import com.google.gson.JsonObject;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,7 +19,6 @@ import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class PlayerTracker implements Listener {
     private final Map<Player, Long> lastMoveTime = new HashMap<>();
@@ -80,69 +78,69 @@ public class PlayerTracker implements Listener {
         return (int) (currentTime - joinTimestamp);
     }
 
-    public JsonObject getOnlinePlayersInfo() {
-        JsonObject result = new JsonObject();
+    public Map<String, Object> getOnlinePlayersInfo() {
+        Map<String, Object> result = new HashMap<>();
 
         // Add player information keyed by UUID
-        JsonObject playersObject = new JsonObject();
+        Map<String, Object> playersObject = new HashMap<>();
         Economy economy = TAPI.getEconomy();
 
         for (Player player : org.bukkit.Bukkit.getOnlinePlayers()) {
-            JsonObject playerData = new JsonObject();
+            Map<String, Object> playerData = new HashMap<>();
 
-            playerData.addProperty("name", player.getName());
+            playerData.put("name", player.getName());
 
-            playerData.addProperty("online_duration", getPlayerOnlineDuration(player));
+            playerData.put("online_duration", getPlayerOnlineDuration(player));
 
-            playerData.addProperty("afk_duration", getPlayerAFKDuration(player));
+            playerData.put("afk_duration", getPlayerAFKDuration(player));
 
             double balance = economy.getBalance(player);
             BigDecimal bd = new BigDecimal(balance).setScale(2, RoundingMode.HALF_UP);
-            playerData.addProperty("balance", bd.doubleValue());
+            playerData.put("balance", bd.doubleValue());
 
             addTownyData(player, playerData);
 
-            playersObject.add(player.getUniqueId().toString(), playerData);
+            playersObject.put(player.getUniqueId().toString(), playerData);
         }
 
-        result.add("online_players", playersObject);
+        result.put("online_players", playersObject);
         return result;
     }
 
-    private void addTownyData(Player player, JsonObject playerData) {
+    private void addTownyData(Player player, Map<String, Object> playerData) {
         Resident resident = TownyAPI.getInstance().getResident(player.getUniqueId());
 
-        // TODO: clean this, there are too many conditionals. See how its done in TownyTracker.java
-        if (resident != null) {
-            Town town = resident.getTownOrNull();
+        // Defaults
+        playerData.put("title", "");
+        playerData.put("town", "");
+        playerData.put("town_name", "");
+        playerData.put("nation", "");
+        playerData.put("nation_name", "");
 
-            String title = resident.getTitle();
-            playerData.addProperty("title", Objects.requireNonNullElse(title, ""));
-            if (town != null) {
-                playerData.addProperty("town", town.getUUID().toString());
-                playerData.addProperty("town_name", town.getName());
-
-                Nation nation = town.getNationOrNull();
-
-                if (nation != null) {
-                    playerData.addProperty("nation", nation.getUUID().toString());
-                    playerData.addProperty("nation_name", nation.getName());
-                } else {
-                    playerData.addProperty("nation", "");
-                    playerData.addProperty("nation_name", "");
-                }
-
-            } else {
-                playerData.addProperty("town", "");
-                playerData.addProperty("town_name", "");
-                playerData.addProperty("nation", "");
-                playerData.addProperty("nation_name", "");
-            }
-        } else {
-            playerData.addProperty("town", "");
-            playerData.addProperty("town_name", "");
-            playerData.addProperty("nation", "");
-            playerData.addProperty("nation_name", "");
+        if (resident == null) {
+            return;
         }
+
+        String title = resident.getTitle();
+        if (title != null) {
+            playerData.put("title", title);
+        }
+
+        Town town = resident.getTownOrNull();
+        if (town == null) {
+            return;
+        }
+
+        playerData.put("town", town.getUUID().toString());
+        playerData.put("town_name", town.getName());
+
+        Nation nation = town.getNationOrNull();
+        if (nation == null) {
+            return;
+        }
+
+        playerData.put("nation", nation.getUUID().toString());
+        playerData.put("nation_name", nation.getName());
     }
+
 }
