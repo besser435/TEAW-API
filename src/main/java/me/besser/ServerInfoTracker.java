@@ -7,17 +7,19 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import static java.util.logging.Level.WARNING;
 import static me.besser.DIETLogger.*;
 
 public class ServerInfoTracker {
     private final TAPI plugin;
+    private final String buildTimestamp;
 
     public ServerInfoTracker(TAPI plugin) {
         this.plugin = plugin;
+        this.buildTimestamp = loadBuildTimestamp();
     }
-
 
     public Map<String, Object> getServerInfo() {
         Map<String, Object> serverInfo = new HashMap<>();
@@ -31,7 +33,7 @@ public class ServerInfoTracker {
         serverInfo.put("loaded_chunks", Arrays.stream(world.getLoadedChunks()).count());
 
         serverInfo.put("tapi_version", plugin.getDescription().getVersion());
-        serverInfo.put("tapi_build", getTAPIBuildTime());
+        serverInfo.put("tapi_build", buildTimestamp);
         serverInfo.put("server_version", Bukkit.getVersion());
         serverInfo.put("system_time", Instant.now().toEpochMilli());
 
@@ -39,31 +41,25 @@ public class ServerInfoTracker {
     }
 
     private String getWorldWeather(World world) {
-        boolean isThundering = world.isThundering();
-        boolean hasStorm = world.hasStorm();
-
-        if (isThundering) {
-            return "Thunderstorms";
-        } else if (hasStorm) {
-            return "Rainy";
-        } else {
-            return "Clear";
-        }
+        if (world.isThundering()) return "Thunderstorms";
+        if (world.hasStorm()) return "Rainy";
+        return "Clear";
     }
 
-    private String getTAPIBuildTime() {
-        String buildTime = null;
-
+    private String loadBuildTimestamp() {
         try {
-            java.util.Properties properties = new java.util.Properties();
+            Properties properties = new Properties();
+            if (plugin.getResource("build.properties") == null) {
+                log(WARNING, "build.properties not found in plugin jar");
+                return "Unknown";
+            }
+
             properties.load(plugin.getResource("build.properties"));
-
-            buildTime = properties.getProperty("build.timestamp", "Unknown");
+            return properties.getProperty("build.timestamp", "unknown");
         } catch (Exception e) {
-            log(WARNING, "Could not load build timestamp");
+            log(WARNING, "Could not load build timestamp", e);
+            return "unknown";
         }
-
-        return buildTime;
     }
 
     private String convertTicksTo24HourFormat(long ticks) {
