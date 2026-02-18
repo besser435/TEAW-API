@@ -35,6 +35,9 @@ Returns a list of online players.
 `afk_duration` Is the AFK duration for a player in milliseconds if they are AFK.
 If the player has moved within the configured AFK threshold, this will be 0.
 
+`joined_date` Is the time the player was registered in Towny. This should be the first time they logged onto the server.
+The time is an epoch in milliseconds.
+
 
 Example response:
 ```json
@@ -49,7 +52,8 @@ Example response:
       "town": "1bfd162d-0b88-493f-a9d4-aa00f3401a37",
       "town_name": "TTown",
       "nation": "213a493f-02f4-499d-999f-4d371f839bb3",
-      "nation_name": "MyNation"
+      "nation_name": "MyNation",
+      "joined_date": 1661465903362
     }
   }
 }

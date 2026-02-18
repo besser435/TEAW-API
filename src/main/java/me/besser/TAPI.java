@@ -62,7 +62,6 @@ public final class TAPI extends JavaPlugin {
         );
     }
 
-
     private boolean setupEconomy() {
         Plugin vaultPlugin = getServer().getPluginManager().getPlugin("Vault");
         if (vaultPlugin == null) {

@@ -116,10 +116,13 @@ public class PlayerTracker implements Listener {
         playerData.put("town_name", "");
         playerData.put("nation", "");
         playerData.put("nation_name", "");
+        playerData.put("joined_date", 0);
 
         if (resident == null) {
             return;
         }
+
+        playerData.put("joined_date", resident.getRegistered());
 
         String title = resident.getTitle();
         if (title != null) {
@@ -142,5 +145,4 @@ public class PlayerTracker implements Listener {
         playerData.put("nation", nation.getUUID().toString());
         playerData.put("nation_name", nation.getName());
     }
-
 }

@@ -71,5 +71,4 @@ public class ServerInfoTracker {
         // Format as HH:mm
         return String.format("%02d:%02d", hours, minutes);
     }
-
 }
