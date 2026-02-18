@@ -116,7 +116,7 @@ public class PlayerTracker implements Listener {
         playerData.put("town_name", "");
         playerData.put("nation", "");
         playerData.put("nation_name", "");
-        playerData.put("joined_date", 0);
+        playerData.put("first_joined_date", 0);
 
         if (resident == null) {
             return;
