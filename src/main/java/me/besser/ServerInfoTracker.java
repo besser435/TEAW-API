@@ -51,7 +51,7 @@ public class ServerInfoTracker {
             Properties properties = new Properties();
             if (plugin.getResource("build.properties") == null) {
                 log(WARNING, "build.properties not found in plugin jar");
-                return "Unknown";
+                return "unknown";
             }
 
             properties.load(plugin.getResource("build.properties"));

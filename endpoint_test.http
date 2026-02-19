@@ -28,6 +28,11 @@ GET localhost:1850/api/server_info
 GET localhost:1850/api/chat_history?time=1700000000
 ###
 
+// PvP log
+//@no-log
+GET http://localhost:1850/api/kill_history
+###
+
 // Offline player stats (only returns stats under the general category)
 //@no-log
 //GET localhost:1850/api/offline_player_stats/75418e9c-34ef-4926-af64-96d98d10954c

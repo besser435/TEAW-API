@@ -122,7 +122,7 @@ public class PlayerTracker implements Listener {
             return;
         }
 
-        playerData.put("joined_date", resident.getRegistered());
+        playerData.put("first_joined_date", resident.getRegistered());
 
         String title = resident.getTitle();
         if (title != null) {
