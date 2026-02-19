@@ -3,6 +3,8 @@ It should be a server side mod that updates an SQLite DB directly. This would al
 and would allow us to completely cut out the DB updater scripts. The website would live on the server, and just
 read from the database directly. 
 
+TAPI v1 should remain as an old branch, where v2 is the new default branch. Do the same for the TEAW website.
+
 
 # TEAW API
 TAPI is a super simple plugin that provides a web-server which exposes data about the ToEndAllWars Minecraft server. 
