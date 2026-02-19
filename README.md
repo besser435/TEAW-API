@@ -1,3 +1,9 @@
+# FOR TAPI v2:
+It should be a server side mod that updates an SQLite DB directly. This would allow for better data synchronization,
+and would allow us to completely cut out the DB updater scripts. The website would live on the server, and just
+read from the database directly. 
+
+
 # TEAW API
 TAPI is a super simple plugin that provides a web-server which exposes data about the ToEndAllWars Minecraft server. 
 It shows things like online players, Towny info, player statistics, and more.
