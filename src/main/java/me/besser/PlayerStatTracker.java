@@ -1,8 +1,7 @@
 package me.besser;
 
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Statistic;
 import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -11,13 +10,10 @@ import java.util.Map;
 
 public class PlayerStatTracker {
 
-    // TODO: make this support offline players. General stats can work on offline players, but not item or entity types
-    // see comment in PlayerDataServer.java - /offline_player_stats route
-    //public Map<String, Object> getPlayerStatistics(OfflinePlayer player) {
-
-    /** Will not return zero values. Player also needs to be online.*/
+    /** Will not return zero values. Player also needs to be online. */
     public Map<String, Object> getPlayerStatistics(Player player) {
-
+        // The nested loops, redundant recalculations, and the 25,000 loop iterations may look slow,
+        // but it only takes a few milliseconds to get a result so who cares :pray:
         Map<String, Object> stats = new HashMap<>();
 
         Map<String, Integer> generalStats = new HashMap<>();
@@ -42,8 +38,7 @@ public class PlayerStatTracker {
                                     itemStats.computeIfAbsent(statistic.name(), k -> new HashMap<>())
                                             .put(material.name(), itemValue);
                                 }
-                            } catch (IllegalArgumentException ignored) {
-                            }
+                            } catch (IllegalArgumentException ignored) {}
                         }
                         break;
 
@@ -55,13 +50,25 @@ public class PlayerStatTracker {
                                     mobStats.computeIfAbsent(statistic.name(), k -> new HashMap<>())
                                             .put(entityType.name(), mobValue);
                                 }
-                            } catch (IllegalArgumentException ignored) {
-                            }
+                            } catch (IllegalArgumentException ignored) {}
+                        }
+                        break;
+
+                    case BLOCK:
+                        for (Material material : Material.values()) {
+                            if (!material.isBlock()) continue;
+
+                            try {
+                                int blockValue = player.getStatistic(statistic, material);
+                                if (blockValue > 0) {
+                                    itemStats.computeIfAbsent(statistic.name(), k -> new HashMap<>())
+                                            .put(material.name(), blockValue);
+                                }
+                            } catch (IllegalArgumentException ignored) {}
                         }
                         break;
                 }
-            } catch (IllegalArgumentException ignored) {
-            }
+            } catch (IllegalArgumentException ignored) {}
         }
 
         stats.put("general", generalStats);

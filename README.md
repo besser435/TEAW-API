@@ -157,6 +157,17 @@ Example response:
       "CREATE_CREATIVE_FLUID_TANK": 1,
       "DIAMOND": 340,
       "FISHING_ROD": 1
+    },
+    "CRAFT_ITEM": {
+      "FARMERSDELIGHT_STRAW": 63,
+      "GOLDEN_APPLE": 4
+    },
+    "BREAK_ITEM": {
+      "DIAMOND_PICKAXE": 1
+    },
+    "MINE_BLOCK" : {
+      "GOLD_BLOCK": 571,
+      "SPRUCE_PRESSURE_PLATE":30
     }
   }
 }
