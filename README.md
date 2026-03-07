@@ -13,10 +13,6 @@ It shows things like online players, Towny info, player statistics, and more.
 The Spigot and dependency APIs are very simple, so this can easily be expanded.
 
 ## Programmer Notes & To Do
-Spark isn't updated anymore, transition to something else like Javalin. <br>
-Try to actually be compliant with the [json:api spec](https://jsonapi.org/). <br>
-Store player statistics locally so that offline players can still be queried.
-
 Data is **not** normalized. For example, we have Towny UUIDs and names in several endpoints. 
 In the `online_players` endpoint, we have `town`, `town_name`, `nation`,`nation_name`. And in the towny endpoint, 
 we have a `residents` array with player UUIDs. This is nice as we don't have to query `online_players`, then query `towny`
