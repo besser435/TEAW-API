@@ -19,15 +19,14 @@ public class InsertMethods {
             String sql = "INSERT INTO chat(sender_uuid, sender, message, timestamp, type) VALUES(?,?,?,?,?)";
 
             try (Connection conn = DatabaseManager.getConnection();
-                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                 PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-                // TODO will throw null pointer when null gets passed, say from server chat messages
-                pstmt.setString(1, uuid != null ? uuid.toString().toLowerCase() : null);
-                pstmt.setString(2, sender);
-                pstmt.setString(3, msg);
-                pstmt.setLong(4, Instant.now().toEpochMilli());
-                pstmt.setString(5, type.toString().toLowerCase());
-                pstmt.executeUpdate();
+                stmt.setString(1, uuid != null ? uuid.toString().toLowerCase() : null);
+                stmt.setString(2, sender);
+                stmt.setString(3, msg);
+                stmt.setLong(4, Instant.now().getEpochSecond());
+                stmt.setString(5, type.toString().toLowerCase());
+                stmt.executeUpdate();
 
             } catch (SQLException e) {
                 TAPI.LOGGER.error("Failed to log chat message: {}", e.getMessage());
@@ -36,6 +35,17 @@ public class InsertMethods {
     }
 
     public static void shutdown() {
+        TAPI.LOGGER.info("Shutting down database thread pool...");
         DB_THREAD_POOL.shutdown();
+        try {
+            // Wait up to 5 seconds
+            if (!DB_THREAD_POOL.awaitTermination(5, java.util.concurrent.TimeUnit.SECONDS)) {
+                DB_THREAD_POOL.shutdownNow(); // Force close if it takes too long
+            }
+        } catch (InterruptedException e) {
+            DB_THREAD_POOL.shutdownNow();
+        }
+        TAPI.LOGGER.info("Database thread pool shut down.");
     }
+
 }

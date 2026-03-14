@@ -1,4 +1,4 @@
-# v2 dev notes and todo:
+# v2 dev notes:
 * The JDBC SQLite driver dependency is a bit janky. Might conflict with other mods depending on how they load their
 SQLite driver. 
 
@@ -9,13 +9,13 @@ SQLite driver.
 * Normalize data. This will make querying the database harder, but will drastically cut down on the DB size.
 
 
+# v2 TODO:
+* Add config file
+
 
 # TEAW API 2
 TAPI 2 is a super simple server-side mod that updates an SQLite database with information about the ToEndAllWars Minecraft server. 
 It shows things like online players, chat history, player statistics, and more.
-
-
-
 
 
 ## Configuration

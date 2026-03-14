@@ -11,7 +11,6 @@ import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 
 public class ChatListener {
-
     public enum Type {
         CHAT,
         DISCORD,
@@ -86,7 +85,7 @@ public class ChatListener {
     public void onAdvancement(AdvancementEvent.AdvancementEarnEvent event) {
         event.getAdvancement().value().display().ifPresent(display -> {
             String msg = event.getEntity().getName().getString() +
-                    " has completed the advancement [" +
+                    " completed the advancement [" +
                     display.getTitle().getString() + "]";
 
             InsertMethods.logChat(
