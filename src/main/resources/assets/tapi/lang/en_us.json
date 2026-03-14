@@ -1,0 +1,13 @@
+{
+  "itemGroup.tapi": "Example Mod Tab",
+  "block.tapi.example_block": "Example Block",
+  "item.tapi.example_item": "Example Item",
+
+  "tapi.configuration.title": "TAPI Configs",
+  "tapi.configuration.section.tapi.common.toml": "TAPI Configs",
+  "tapi.configuration.section.tapi.common.toml.title": "TAPI Configs",
+  "tapi.configuration.items": "Item List",
+  "tapi.configuration.logDirtBlock": "Log Dirt Block",
+  "tapi.configuration.magicNumberIntroduction": "Magic Number Text",
+  "tapi.configuration.magicNumber": "Magic Number"
+}
