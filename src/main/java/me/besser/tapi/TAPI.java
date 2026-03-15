@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import me.besser.tapi.database.DatabaseManager;
 import me.besser.tapi.database.InsertMethods;
 import me.besser.tapi.listeners.ChatTracker;
+import me.besser.tapi.listeners.CombatTracker;
 import me.besser.tapi.listeners.PlayerTracker;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -33,6 +34,7 @@ public class TAPI {
         // Event listeners
         NeoForge.EVENT_BUS.register(new ChatTracker());
         NeoForge.EVENT_BUS.register(new PlayerTracker());
+        NeoForge.EVENT_BUS.register(new CombatTracker());
 
         NeoForge.EVENT_BUS.addListener(this::onServerStopped);
 

@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DatabaseManager {
-    private static final String DB_URL = "jdbc:sqlite:/TAPI.db";
+    private static final String DB_URL = "jdbc:sqlite:TAPI.db";
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL);
@@ -29,6 +29,7 @@ public class DatabaseManager {
                             "first_joined_date INTEGER);"
             );
 
+
             // Chat table
             stmt.execute(
                     "CREATE TABLE IF NOT EXISTS chat (" +
@@ -42,10 +43,23 @@ public class DatabaseManager {
             stmt.execute("CREATE INDEX IF NOT EXISTS idx_chat_timestamp ON chat(timestamp);");
 
 
+            // Kills table
+            stmt.execute(
+                    "CREATE TABLE IF NOT EXISTS kills (" +
+                            "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                            "killer_uuid TEXT," +
+                            "killer_name TEXT," +
+                            "victim_uuid TEXT," +
+                            "victim_name TEXT," +
+                            "death_message TEXT," +
+                            "weapon_json TEXT," +
+                            "timestamp INTEGER);"
+            );
+
 
             TAPI.LOGGER.info("SQLite Database initialized!");
         } catch (SQLException e) {
-            TAPI.LOGGER.error("Database initialization failed: {}", e.getMessage());
+            throw new RuntimeException("TAPI database initialization failed: ", e);
         }
     }
 }

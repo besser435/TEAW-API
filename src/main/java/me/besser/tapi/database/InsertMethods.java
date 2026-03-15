@@ -1,5 +1,6 @@
 package me.besser.tapi.database;
 
+import com.google.gson.JsonObject;
 import me.besser.tapi.TAPI;
 import me.besser.tapi.listeners.ChatTracker;
 
@@ -71,11 +72,28 @@ public class InsertMethods {
         });
     }
 
+    // Log kill
+    public static void logKill(UUID kUuid, String kName, UUID vUuid, String vName, String deathMsg, JsonObject weaponJson) {
+        DB_THREAD_POOL.execute(() -> {
+            String sql = "INSERT INTO kills(killer_uuid, killer_name, victim_uuid, victim_name, death_message, weapon_json, timestamp) VALUES(?,?,?,?,?,?,?)";
 
+            try (Connection conn = DatabaseManager.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(sql)) {
 
+                stmt.setString(1, kUuid.toString());
+                stmt.setString(2, kName);
+                stmt.setString(3, vUuid.toString());
+                stmt.setString(4, vName);
+                stmt.setString(5, deathMsg);
+                stmt.setString(6, weaponJson.toString());
+                stmt.setLong(7, Instant.now().getEpochSecond());
+                stmt.executeUpdate();
 
-
-
+            } catch (SQLException e) {
+                TAPI.LOGGER.error("DB error on kill log: {}", e.getMessage());
+            }
+        });
+    }
 
 
     public static void shutdown() {
