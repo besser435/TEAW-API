@@ -1,7 +1,7 @@
 package me.besser.tapi.database;
 
 import me.besser.tapi.TAPI;
-import me.besser.tapi.listeners.ChatListener;
+import me.besser.tapi.listeners.ChatTracker;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,7 +14,8 @@ import java.util.concurrent.Executors;
 public class InsertMethods {
     private static final ExecutorService DB_THREAD_POOL = Executors.newSingleThreadExecutor();
 
-    public static void logChat(UUID uuid, String sender, String msg, ChatListener.Type type) {
+    // Log chat message
+    public static void logChat(UUID uuid, String sender, String msg, ChatTracker.Type type) {
         DB_THREAD_POOL.execute(() -> {
             String sql = "INSERT INTO chat(sender_uuid, sender, message, timestamp, type) VALUES(?,?,?,?,?)";
 
@@ -29,10 +30,53 @@ public class InsertMethods {
                 stmt.executeUpdate();
 
             } catch (SQLException e) {
-                TAPI.LOGGER.error("Failed to log chat message: {}", e.getMessage());
+                TAPI.LOGGER.error("DB error on chat message: {}", e.getMessage());
             }
         });
     }
+
+    // Init/create player
+    public static void initPlayer(UUID uuid, String name) {
+        DB_THREAD_POOL.execute(() -> {
+            long now = Instant.now().getEpochSecond();
+            String sql = "INSERT INTO players (uuid, name, last_online, first_joined_date) VALUES (?, ?, ?, ?) " +
+                    "ON CONFLICT(uuid) DO UPDATE SET name = excluded.name, last_online = excluded.last_online;";
+            try (Connection conn = DatabaseManager.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, uuid.toString());
+                stmt.setString(2, name);
+                stmt.setLong(3, now);
+                stmt.setLong(4, now); // Only used if row is new
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                TAPI.LOGGER.error("DB Error on player init: {}", e.getMessage());
+            }
+        });
+    }
+
+    // Update player
+    public static void updatePlayerSession(UUID uuid, long onlineSec, long afkSec) {
+        DB_THREAD_POOL.execute(() -> {
+            String sql = "UPDATE players SET online_duration = ?, afk_duration = ?, last_online = ? WHERE uuid = ?;";
+            try (Connection conn = DatabaseManager.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setLong(1, onlineSec);
+                stmt.setLong(2, afkSec);
+                stmt.setLong(3, Instant.now().getEpochSecond());
+                stmt.setString(4, uuid.toString());
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                TAPI.LOGGER.error("DB Error on player update: {}", e.getMessage());
+            }
+        });
+    }
+
+
+
+
+
+
+
 
     public static void shutdown() {
         TAPI.LOGGER.info("Shutting down database thread pool...");
@@ -47,5 +91,4 @@ public class InsertMethods {
         }
         TAPI.LOGGER.info("Database thread pool shut down.");
     }
-
 }

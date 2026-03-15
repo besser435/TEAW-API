@@ -3,7 +3,8 @@ package me.besser.tapi;
 import com.mojang.logging.LogUtils;
 import me.besser.tapi.database.DatabaseManager;
 import me.besser.tapi.database.InsertMethods;
-import me.besser.tapi.listeners.ChatListener;
+import me.besser.tapi.listeners.ChatTracker;
+import me.besser.tapi.listeners.PlayerTracker;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -23,14 +24,15 @@ public class TAPI {
     public TAPI(IEventBus modEventBus, ModContainer modContainer) {
         NeoForge.EVENT_BUS.register(this);
 
+        // Set up config
+        modContainer.registerConfig(ModConfig.Type.COMMON, TAPIConfig.SPEC);
+
         // Set up database
         modEventBus.addListener(this::databaseSetup);
 
-        // Register our mod's ModConfigSpec so that FML can create and load the config file for us
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
-
         // Event listeners
-        NeoForge.EVENT_BUS.register(new ChatListener());
+        NeoForge.EVENT_BUS.register(new ChatTracker());
+        NeoForge.EVENT_BUS.register(new PlayerTracker());
 
         NeoForge.EVENT_BUS.addListener(this::onServerStopped);
 
@@ -45,7 +47,8 @@ public class TAPI {
 
     private void onServerStopped(net.neoforged.neoforge.event.server.ServerStoppedEvent event) {
         InsertMethods.shutdown();
-        LOGGER.info("TEAW API 2 stopped!");
+
+        LOGGER.info("TEAW API 2 stopped!"); // TODO: print version number from gradle.properties
     }
 
     @SubscribeEvent

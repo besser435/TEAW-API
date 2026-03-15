@@ -10,7 +10,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 
-public class ChatListener {
+public class ChatTracker {
     public enum Type {
         CHAT,
         DISCORD,
