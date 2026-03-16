@@ -39,7 +39,6 @@ public class DatabaseManager {
                             "message TEXT," +
                             "timestamp DATETIME," +
                             "type TEXT);");
-
             stmt.execute("CREATE INDEX IF NOT EXISTS idx_chat_timestamp ON chat(timestamp);");
 
 
@@ -54,6 +53,26 @@ public class DatabaseManager {
                             "death_message TEXT," +
                             "weapon_json TEXT," +
                             "timestamp INTEGER);"
+            );
+
+
+            // Player stats table
+            stmt.execute(
+                    "CREATE TABLE IF NOT EXISTS player_statistics (" +
+                            "player_uuid TEXT," +
+                            "category TEXT," +   // minecraft:mined, minecraft:custom, etc
+                            "stat_key TEXT," +   // minecraft:dirt, minecraft:jump, etc
+                            "stat_value INTEGER," +
+                            "PRIMARY KEY (player_uuid, category, stat_key));"
+            );
+            stmt.execute("CREATE INDEX IF NOT EXISTS idx_stats_lookup ON player_statistics(stat_key, stat_value);");
+
+
+            // Variables table
+            stmt.execute(
+                    "CREATE TABLE IF NOT EXISTS variables (" +
+                            "variable TEXT PRIMARY KEY," +
+                            "value TEXT);"
             );
 
 

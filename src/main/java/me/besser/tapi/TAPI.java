@@ -3,9 +3,7 @@ package me.besser.tapi;
 import com.mojang.logging.LogUtils;
 import me.besser.tapi.database.DatabaseManager;
 import me.besser.tapi.database.InsertMethods;
-import me.besser.tapi.listeners.ChatTracker;
-import me.besser.tapi.listeners.CombatTracker;
-import me.besser.tapi.listeners.PlayerTracker;
+import me.besser.tapi.listeners.*;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -21,8 +19,11 @@ import org.slf4j.Logger;
 public class TAPI {
     public static final String MODID = "tapi";
     public static final Logger LOGGER = LogUtils.getLogger();
+    public static String VERSION;
 
     public TAPI(IEventBus modEventBus, ModContainer modContainer) {
+        VERSION = modContainer.getModInfo().getVersion().toString();
+
         NeoForge.EVENT_BUS.register(this);
 
         // Set up config
@@ -35,11 +36,13 @@ public class TAPI {
         NeoForge.EVENT_BUS.register(new ChatTracker());
         NeoForge.EVENT_BUS.register(new PlayerTracker());
         NeoForge.EVENT_BUS.register(new CombatTracker());
+        NeoForge.EVENT_BUS.register(new StatTracker());
+        NeoForge.EVENT_BUS.register(new ServerInfoTracker());
 
         NeoForge.EVENT_BUS.addListener(this::onServerStopped);
 
 
-        LOGGER.info("TEAW API 2 started!"); // TODO: print version number from gradle.properties
+        LOGGER.info("TEAW API v{} started!", VERSION);
     }
 
 
@@ -50,7 +53,8 @@ public class TAPI {
     private void onServerStopped(net.neoforged.neoforge.event.server.ServerStoppedEvent event) {
         InsertMethods.shutdown();
 
-        LOGGER.info("TEAW API 2 stopped!"); // TODO: print version number from gradle.properties
+
+        LOGGER.info("TEAW API v{} stopped!", VERSION);
     }
 
     @SubscribeEvent

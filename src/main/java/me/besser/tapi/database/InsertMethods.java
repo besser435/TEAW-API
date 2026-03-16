@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.Instant;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -95,6 +96,54 @@ public class InsertMethods {
         });
     }
 
+    // Log player stats
+    public static void batchUpdateStats(UUID uuid, Map<String, Map<String, Integer>> statsMap) {
+        DB_THREAD_POOL.execute(() -> {
+            String sql = "INSERT INTO player_statistics (player_uuid, category, stat_key, stat_value) VALUES (?, ?, ?, ?) " +
+                    "ON CONFLICT(player_uuid, category, stat_key) DO UPDATE SET stat_value = excluded.stat_value;";
+
+            try (Connection conn = DatabaseManager.getConnection()) {
+                conn.setAutoCommit(false); // Start Transaction
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                    String uuidStr = uuid.toString();
+
+                    for (Map.Entry<String, Map<String, Integer>> categoryEntry : statsMap.entrySet()) {
+                        String category = categoryEntry.getKey();
+                        for (Map.Entry<String, Integer> statEntry : categoryEntry.getValue().entrySet()) {
+                            stmt.setString(1, uuidStr);
+                            stmt.setString(2, category);
+                            stmt.setString(3, statEntry.getKey());
+                            stmt.setInt(4, statEntry.getValue());
+                            stmt.addBatch();
+                        }
+                    }
+                    stmt.executeBatch();
+                    conn.commit(); // End Transaction
+                } catch (SQLException e) {
+                    conn.rollback();
+                    throw e;
+                }
+            } catch (SQLException e) {
+                TAPI.LOGGER.error("Batch stat update failed for {}: {}", uuid, e.getMessage());
+            }
+        });
+    }
+
+    // Store variable
+    public static void upsertVariable(String variable, String value) {
+        DB_THREAD_POOL.execute(() -> {
+            String sql = "INSERT INTO variables (variable, value) VALUES (?, ?) " +
+                    "ON CONFLICT(variable) DO UPDATE SET value = excluded.value;";
+            try (Connection conn = DatabaseManager.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, variable);
+                stmt.setString(2, value);
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                TAPI.LOGGER.error("DB Error upserting variable {}: {}", variable, e.getMessage());
+            }
+        });
+    }
 
     public static void shutdown() {
         TAPI.LOGGER.info("Shutting down database thread pool...");

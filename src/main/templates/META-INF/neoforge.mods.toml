@@ -42,7 +42,7 @@ authors="besser"
 
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-TEAW API server mod.
+TEAW API.
 '''
 
 # The [[mixins]] block allows you to declare your mixin config to FML so that it gets loaded.
