@@ -1,4 +1,5 @@
 package me.besser.tapi.listeners;
+import me.besser.tapi.TAPI;
 import me.besser.tapi.database.InsertMethods;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -8,20 +9,24 @@ import net.minecraft.stats.Stat;
 import net.minecraft.stats.StatType;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 
 import java.util.HashMap;
 import java.util.Map;
 public class StatTracker {
 
     // TODO:
-    // This might not get called when the server stops.
-    // Also, might be nice to have periodic updates, so online players can watch the
-    // leaderboard go up as they fish for example.
+    // Might be nice to have periodic updates, so online players can watch the
+    // leaderboard go up as they fish for example. Right now they have to log out to see changes.
     @SubscribeEvent
     public void onPlayerQuit(PlayerEvent.PlayerLoggedOutEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player) {
-            syncStats(player);
-        }
+        if (event.getEntity() instanceof ServerPlayer player) syncStats(player);
+    }
+
+    @SubscribeEvent
+    public void onServerStopping(ServerStoppingEvent event) {   // Server shutdown doesn't fire PlayerLoggedOutEvent
+        TAPI.LOGGER.info("Server stopping: Syncing all player stats...");
+        event.getServer().getPlayerList().getPlayers().forEach(this::syncStats);
     }
 
     public void syncStats(ServerPlayer player) {
