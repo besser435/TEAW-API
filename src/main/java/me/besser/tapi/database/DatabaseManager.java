@@ -26,7 +26,8 @@ public class DatabaseManager {
                             "online_duration INTEGER DEFAULT 0," +  // Seconds in current session
                             "afk_duration INTEGER DEFAULT 0," +     // Seconds AFK (0 if not AFK)
                             "last_online INTEGER," +
-                            "first_joined_date INTEGER);"
+                            "first_joined_date INTEGER," +
+                            "played_v4 BOOLEAN DEFAULT 0);"
             );
 
 
