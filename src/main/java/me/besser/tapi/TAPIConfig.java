@@ -21,7 +21,7 @@ public class TAPIConfig {
 
             afkTimeout = builder
                     .comment("How many seconds someone has to not move for before being declared AFK.")
-                    .defineInRange("afkTimeout", 180, 0, 1024);
+                    .defineInRange("afkTimeout", 180, 0, Integer.MAX_VALUE);
 
 
             builder.pop();

@@ -8,6 +8,11 @@ SQLite driver.
 
 * ## Update NeoForge version as it gets updated. This is using a super early beta for 26.1.1.
 
+* Fix any chat formatting issues. See the comment in the ChatTracker class.
+
+* Periodic updates for player stats, so they get updated more often than just player disconnects. Will be nice so online
+players can see their stats go up for example.
+
 # TEAW API 2
 TAPI 2 is a super simple server-side mod that updates an SQLite database with information about the ToEndAllWars Minecraft server. 
 It shows things like online players, chat history, player statistics, and more.

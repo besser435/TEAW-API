@@ -10,6 +10,7 @@ import net.minecraft.stats.StatType;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +19,7 @@ public class StatTracker {
     // TODO:
     // Might be nice to have periodic updates, so online players can watch the
     // leaderboard go up as they fish for example. Right now they have to log out to see changes.
+    // Maybe update players every 5 minutes or something. Might be slow, so make sure it doesnt affect performance.
     @SubscribeEvent
     public void onPlayerQuit(PlayerEvent.PlayerLoggedOutEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) syncStats(player);
