@@ -1,11 +1,11 @@
 package me.besser.tapi.listeners;
 
+import me.besser.tapi.TAPI;
 import me.besser.tapi.database.InsertMethods;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
-import me.besser.tapi.TAPI;
 
 public class ServerInfoTracker {
 
@@ -27,7 +27,7 @@ public class ServerInfoTracker {
 
         // Time
         long gameTime = level.getGameTime();
-        long timeInDay = level.getDayTime() % 24000;
+        long timeInDay = level.getOverworldClockTime() % 24000;
         long daysPassed = gameTime / 24000;
 
         int hours = (int) ((timeInDay / 1000 + 6) % 24);

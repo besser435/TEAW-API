@@ -6,10 +6,12 @@ SQLite driver.
 
 * Normalize data. This will make querying the database harder, but will drastically cut down on the DB size.
 
+* ## Update NeoForge version as it gets updated. This is using a super early beta for 26.1.1.
+
 # TEAW API 2
 TAPI 2 is a super simple server-side mod that updates an SQLite database with information about the ToEndAllWars Minecraft server. 
 It shows things like online players, chat history, player statistics, and more.
 
 ## Configuration
 In the `config.yml` file, there are a few options. `discord_channel_id`, & `afk_timeout`.
-`discord_channel_id` is not yet implimented, as the chat logger does not log discord messages (yet).
+`discord_channel_id` is not yet implemented, as the chat logger does not log discord messages (yet).
