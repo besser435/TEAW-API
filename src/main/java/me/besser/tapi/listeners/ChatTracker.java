@@ -7,6 +7,7 @@ import net.neoforged.neoforge.event.ServerChatEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.AdvancementEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 
@@ -33,7 +34,7 @@ public class ChatTracker {
     }
 
     @SubscribeEvent
-    public void onServerStart(ServerStartingEvent event) {
+    public void onServerStart(ServerStartedEvent event) {
         InsertMethods.logChat(
                 null,
                 "SERVER",
