@@ -13,7 +13,7 @@ public class ServerInfoTracker {
     public void onServerTick(ServerTickEvent.Post event) {
         MinecraftServer server = event.getServer();
 
-        if (server.getTickCount() % 200 != 0) return;
+        if (server.getTickCount() % 100 != 0) return;
 
         ServerLevel level = server.overworld();
 

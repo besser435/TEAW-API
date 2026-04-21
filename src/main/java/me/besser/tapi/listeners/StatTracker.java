@@ -1,4 +1,5 @@
 package me.besser.tapi.listeners;
+
 import me.besser.tapi.TAPI;
 import me.besser.tapi.database.InsertMethods;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -10,7 +11,6 @@ import net.minecraft.stats.StatType;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
-import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 import java.util.HashMap;
 import java.util.Map;
