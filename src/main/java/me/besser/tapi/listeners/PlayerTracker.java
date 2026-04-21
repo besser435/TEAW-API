@@ -8,64 +8,75 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class PlayerTracker {
-    private final Map<UUID, Long> joinTime = new HashMap<>();
-    private final Map<UUID, Long> lastMoveTime = new HashMap<>();
-    private final Map<UUID, Vec3> lastPos = new HashMap<>();
+    private final Map<UUID, SessionData> activeSessions = new HashMap<>();
+
+    private static class SessionData {
+        final long joinTime;
+        long lastMoveTime;
+        Vec3 lastPos;
+
+        SessionData(long time, Vec3 pos) {
+            this.joinTime = time;
+            this.lastMoveTime = time;
+            this.lastPos = pos;
+        }
+    }
 
     @SubscribeEvent
     public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
         UUID uuid = event.getEntity().getUUID();
-        long now = Instant.now().getEpochSecond();
+        long now = System.currentTimeMillis() / 1000;
 
-        joinTime.put(uuid, now);
-        lastMoveTime.put(uuid, now);
-        lastPos.put(uuid, event.getEntity().position());
-
+        activeSessions.put(uuid, new SessionData(now, event.getEntity().position()));
         InsertMethods.initPlayer(uuid, event.getEntity().getName().getString());
-    }
-
-    @SubscribeEvent
-    public void onPlayerTick(PlayerTickEvent.Post event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) return;
-        if (player.tickCount % 20 != 0) return;
-
-        int afkThreshold = TAPIConfig.COMMON.afkTimeout.get();
-        UUID uuid = player.getUUID();
-        long now = Instant.now().getEpochSecond();
-        Vec3 currentPos = player.position();
-
-        // Check for movement
-        Vec3 prevPos = lastPos.get(uuid);
-        if (prevPos != null && (Math.abs(currentPos.x - prevPos.x) > 1 || Math.abs(currentPos.z - prevPos.z) > 1)) {
-            lastMoveTime.put(uuid, now);
-            lastPos.put(uuid, currentPos);
-        }
-
-        // Calculate durations
-        long onlineDuration = now - joinTime.getOrDefault(uuid, now);
-        long idleTime = now - lastMoveTime.getOrDefault(uuid, now);
-        long afkDuration = (idleTime >= afkThreshold) ? idleTime : 0;
-
-        // Only update DB every 5 seconds
-        if (player.tickCount % 100 == 0) {
-            InsertMethods.updatePlayerSession(uuid, onlineDuration, afkDuration);
-        }
     }
 
     @SubscribeEvent
     public void onPlayerQuit(PlayerEvent.PlayerLoggedOutEvent event) {
         UUID uuid = event.getEntity().getUUID();
 
+        activeSessions.remove(uuid);
         InsertMethods.updatePlayerSession(uuid, 0, 0);
+    }
 
-        joinTime.remove(uuid);
-        lastMoveTime.remove(uuid);
-        lastPos.remove(uuid);
+    @SubscribeEvent
+    public void onPlayerTick(PlayerTickEvent.Post event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+
+        UUID uuid = player.getUUID();
+
+        // Stagger player updates to not happen all on the same tick
+        int personalOffset = Math.abs(uuid.hashCode() % 100);
+        if (player.tickCount % 100 != personalOffset) return;
+
+        SessionData session = activeSessions.get(uuid);
+        if (session == null) return;
+
+        long now = System.currentTimeMillis() / 1000;
+        Vec3 currentPos = player.position();
+
+        // Check for movement
+        if (Math.abs(currentPos.x - session.lastPos.x) > 1 || Math.abs(currentPos.z - session.lastPos.z) > 1) {
+            session.lastMoveTime = now;
+            session.lastPos = currentPos;
+        }
+
+        // Save data
+        saveSessionToDatabase(uuid, session, now);
+    }
+
+    private void saveSessionToDatabase(UUID uuid, SessionData session, long now) {
+        int afkThreshold = TAPIConfig.COMMON.afkTimeout.get();
+
+        long onlineDuration = now - session.joinTime;
+        long idleTime = now - session.lastMoveTime;
+        long afkDuration = (idleTime >= afkThreshold) ? idleTime : 0;
+
+        InsertMethods.updatePlayerSession(uuid, onlineDuration, afkDuration);
     }
 }
