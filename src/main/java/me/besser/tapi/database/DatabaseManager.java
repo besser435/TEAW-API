@@ -1,16 +1,28 @@
 package me.besser.tapi.database;
 
 import me.besser.tapi.TAPI;
+import net.neoforged.fml.loading.FMLPaths;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DatabaseManager {
-    private static final String DB_URL = "jdbc:sqlite:TAPI.db";
+    private static final Path DB_DIRECTORY = FMLPaths.GAMEDIR.get().resolve("tapi");
+    private static final Path DB_PATH = DB_DIRECTORY.resolve("tapi.db");
+    private static final String DB_URL = "jdbc:sqlite:" + DB_PATH.toAbsolutePath();
 
     public static Connection getConnection() throws SQLException {
+        try {
+            Files.createDirectories(DB_DIRECTORY);
+        } catch (IOException e) {
+            throw new SQLException("Failed to create TAPI database directory!", e);
+        }
+
         return DriverManager.getConnection(DB_URL);
     }
 
