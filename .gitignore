@@ -1,2 +1,5 @@
 
 /target
+/out
+/.idea
+.idea/modules/TEAW-API.main.iml
