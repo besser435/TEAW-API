@@ -3,7 +3,7 @@ package me.besser.tapi.listeners;
 import me.besser.tapi.TAPI;
 import me.besser.tapi.database.InsertMethods;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.ServerStatsCounter;
 import net.minecraft.stats.Stat;
@@ -36,7 +36,7 @@ public class StatTracker {
         Map<String, Map<String, Integer>> allStats = new HashMap<>();
 
         for (StatType<?> type : BuiltInRegistries.STAT_TYPE) {
-            Identifier typeId = BuiltInRegistries.STAT_TYPE.getKey(type);
+            ResourceLocation typeId = BuiltInRegistries.STAT_TYPE.getKey(type);
             if (typeId == null) continue;
 
             String category = typeId.toString();
@@ -61,13 +61,13 @@ public class StatTracker {
         T value = stat.getValue();
         StatType<T> type = stat.getType();
 
-        // For 'minecraft:custom' stats, the value is already an Identifier
-        if (value instanceof Identifier res) {
+        // For 'minecraft:custom' stats, the value is already a ResourceLocation
+        if (value instanceof  ResourceLocation res) {
             return res.toString();
         }
 
         // For everything else (Items, Blocks, Entities), we ask the type's registry for the key
-        Identifier id = type.getRegistry().getKey(value);
+        ResourceLocation id = type.getRegistry().getKey(value);
         return (id != null) ? id.toString() : value.toString();
     }
 }

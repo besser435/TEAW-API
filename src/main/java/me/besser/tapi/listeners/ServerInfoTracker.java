@@ -27,7 +27,7 @@ public class ServerInfoTracker {
 
         // Time
         long gameTime = level.getGameTime();
-        long timeInDay = level.getOverworldClockTime() % 24000;
+        long timeInDay = level.getDayTime() % 24000;
         long daysPassed = gameTime / 24000;
 
         int hours = (int) ((timeInDay / 1000 + 6) % 24);
@@ -38,6 +38,5 @@ public class ServerInfoTracker {
         InsertMethods.upsertVariable("weather", weather);
         InsertMethods.upsertVariable("world_time_24h", time24h);
         InsertMethods.upsertVariable("day", String.valueOf(daysPassed));
-        InsertMethods.upsertVariable("tapi_version", TAPI.VERSION);
     }
 }

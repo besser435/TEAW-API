@@ -39,7 +39,7 @@ public class CombatTracker {
             JsonObject enchantJson = new JsonObject();
 
             String enchantId = enchantmentHolder.unwrapKey()
-                    .map(key -> key.identifier().toString())
+                    .map(key -> key.location().toString())
                     .orElse("unknown");
 
             int level = enchants.getLevel(enchantmentHolder);

@@ -6,17 +6,20 @@ SQLite driver.
 
 * Normalize data. This will make querying the database harder, but will drastically cut down on the DB size.
 
-* ## Update NeoForge version as it gets updated. This is using a super early beta for 26.1.1.
-
 * Fix any chat formatting issues. See the comment in the ChatTracker class.
 
 * Periodic updates for player stats, so they get updated more often than just player disconnects. Will be nice so online
 players can see their stats go up for example.
 
+* Add Discord support to the chat tracker
+
 # TEAW API 2
 TAPI 2 is a super simple server-side mod that updates an SQLite database with information about the ToEndAllWars Minecraft server. 
-It shows things like online players, chat history, player statistics, and more.
+It tracks things like online players, chat history, player statistics, and more.
 
 ## Configuration
 In the `config.yml` file, there are a few options. `discord_channel_id`, & `afk_timeout`.
 `discord_channel_id` is not yet implemented, as the chat logger does not log discord messages (yet).
+
+## Dev Notes
+* Be sure to keep dependencies up to date, such as sqlite-jdbc in build.gradle
